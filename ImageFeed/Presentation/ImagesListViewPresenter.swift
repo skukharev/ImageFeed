@@ -49,7 +49,7 @@ final class ImagesListViewPresenter {
     /// - Parameter row: индекс ячейки ленты изображений
     /// - Returns: изображение UIImage
     func getImageByCellIndex(row: Int) -> UIImage {
-        guard let image = UIImage(named: photosName[row]) else {
+        guard let image = UIImage(named: photosName[safe: row] ?? "") else {
             return UIImage()
         }
         return image
