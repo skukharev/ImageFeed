@@ -24,10 +24,8 @@ final class ImagesListCell: UITableViewCell {
         if isGradientAdded {
             return
         }
-        let colors = [UIColor.ypBlackAlpha0.cgColor, UIColor.ypBlackAlpha20.cgColor, UIColor.ypBlackAlpha0.cgColor]
-
         let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = colors
+        gradientLayer.colors = [UIColor.ypBlackAlpha0.cgColor, UIColor.ypBlackAlpha20.cgColor, UIColor.ypBlackAlpha0.cgColor]
         gradientLayer.frame = gradientView.bounds
         gradientView.layer.insertSublayer(gradientLayer, at: 0)
 

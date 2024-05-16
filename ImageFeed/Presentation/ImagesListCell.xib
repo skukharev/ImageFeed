@@ -50,8 +50,8 @@
                     <constraint firstItem="3Vv-h7-sAf" firstAttribute="top" secondItem="k8a-Gt-Y22" secondAttribute="top" constant="4" id="7JX-1k-Wzd"/>
                     <constraint firstAttribute="trailing" secondItem="3Vv-h7-sAf" secondAttribute="trailing" constant="16" id="8Ik-oT-Qlh"/>
                     <constraint firstItem="3Vv-h7-sAf" firstAttribute="leading" secondItem="k8a-Gt-Y22" secondAttribute="leading" constant="16" id="CGv-Ad-Vk4"/>
-                    <constraint firstItem="3Vv-h7-sAf" firstAttribute="trailing" secondItem="Iir-Zc-dUa" secondAttribute="trailing" id="KPh-jH-xxC"/>
-                    <constraint firstItem="Iir-Zc-dUa" firstAttribute="leading" secondItem="3Vv-h7-sAf" secondAttribute="leading" id="RkX-AU-ocW"/>
+                    <constraint firstAttribute="trailing" secondItem="Iir-Zc-dUa" secondAttribute="trailing" constant="16" id="KPh-jH-xxC"/>
+                    <constraint firstItem="Iir-Zc-dUa" firstAttribute="leading" secondItem="k8a-Gt-Y22" secondAttribute="leading" constant="16" id="RkX-AU-ocW"/>
                     <constraint firstItem="pBa-L9-ipS" firstAttribute="top" secondItem="3Vv-h7-sAf" secondAttribute="top" id="b4U-zD-Ih0"/>
                     <constraint firstItem="3Vv-h7-sAf" firstAttribute="bottom" secondItem="DXS-TA-67G" secondAttribute="bottom" constant="8" id="chG-1o-Kwc"/>
                     <constraint firstItem="3Vv-h7-sAf" firstAttribute="trailing" secondItem="pBa-L9-ipS" secondAttribute="trailing" id="cyw-9D-QEX"/>

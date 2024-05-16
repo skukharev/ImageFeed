@@ -15,8 +15,8 @@ final class ImagesListViewPresenter {
 
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
+        formatter.dateFormat = "dd MMMM yyyy"
+        formatter.locale = Locale(identifier: "ru_RU")
         return formatter
     }()
 
@@ -35,12 +35,8 @@ final class ImagesListViewPresenter {
     /// - Returns: Структура с вью моделью изображения
     func convert(row: Int) -> ImagesListCellViewModel {
         let picture = UIImage(named: photosName[safe: row] ?? "") ?? UIImage()
-        var buttonPicture = UIImage()
-        if row % 2 == 0 {
-            buttonPicture = UIImage(named: "ActiveLikeButton") ?? UIImage()
-        } else {
-            buttonPicture = UIImage(named: "NoActiveLikeButton") ?? UIImage()
-        }
+        let buttonPictureName = (row % 2 != 0) ? "ActiveLikeButton" : "NoActiveLikeButton"
+        let buttonPicture = UIImage(named: buttonPictureName) ?? UIImage()
 
         return ImagesListCellViewModel(image: picture, likeButtonImage: buttonPicture, dateLabel: dateFormatter.string(from: Date()))
     }
