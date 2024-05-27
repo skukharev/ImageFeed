@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="104" id="oXx-o9-v6j" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="430" height="104"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oXx-o9-v6j" id="CVX-Wv-zF7">
+                <rect key="frame" x="0.0" y="0.0" width="430" height="104"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="57g-eV-Nbn">
+                        <rect key="frame" x="16" y="4" width="398" height="96"/>
+                    </imageView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eE5-no-Qo9">
+                        <rect key="frame" x="370" y="4" width="44" height="44"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="44" id="ZGT-o3-YRN"/>
+                            <constraint firstAttribute="height" constant="44" id="quC-3s-Naj"/>
+                        </constraints>
+                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        <state key="normal" image="NoActiveLikeButton"/>
+                    </button>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VI8-QW-OfU" userLabel="Gradient View">
+                        <rect key="frame" x="16" y="70" width="398" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="vH4-r9-gtO"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kX7-8G-PSx" userLabel="Cell Label">
+                        <rect key="frame" x="24" y="76.333333333333329" width="152" height="15.666666666666671"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="152" id="AUZ-yn-N5T"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" name="YP White"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <color key="backgroundColor" name="YP Black"/>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="VI8-QW-OfU" secondAttribute="trailing" constant="16" id="7HD-RO-JbQ"/>
+                    <constraint firstItem="VI8-QW-OfU" firstAttribute="leading" secondItem="CVX-Wv-zF7" secondAttribute="leading" constant="16" id="7ZJ-nD-rN1"/>
+                    <constraint firstAttribute="trailing" secondItem="57g-eV-Nbn" secondAttribute="trailing" constant="16" id="9XC-QK-HZb"/>
+                    <constraint firstItem="57g-eV-Nbn" firstAttribute="top" secondItem="CVX-Wv-zF7" secondAttribute="top" constant="4" id="DKn-9c-owv"/>
+                    <constraint firstItem="kX7-8G-PSx" firstAttribute="leading" secondItem="57g-eV-Nbn" secondAttribute="leading" constant="8" id="PVW-gK-Aqe"/>
+                    <constraint firstItem="57g-eV-Nbn" firstAttribute="leading" secondItem="CVX-Wv-zF7" secondAttribute="leading" constant="16" id="V1O-TH-Rnp"/>
+                    <constraint firstAttribute="bottom" secondItem="57g-eV-Nbn" secondAttribute="bottom" constant="4" id="XWy-Ou-oZ4"/>
+                    <constraint firstItem="57g-eV-Nbn" firstAttribute="bottom" secondItem="VI8-QW-OfU" secondAttribute="bottom" id="YPu-e8-f9c"/>
+                    <constraint firstItem="57g-eV-Nbn" firstAttribute="bottom" secondItem="kX7-8G-PSx" secondAttribute="bottom" constant="8" id="i0Y-YE-BMs"/>
+                    <constraint firstItem="eE5-no-Qo9" firstAttribute="top" secondItem="57g-eV-Nbn" secondAttribute="top" id="wYp-Zd-tRt"/>
+                    <constraint firstItem="57g-eV-Nbn" firstAttribute="trailing" secondItem="eE5-no-Qo9" secondAttribute="trailing" id="xQ4-Qc-PaC"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="cellButton" destination="eE5-no-Qo9" id="jbQ-tD-3nl"/>
+                <outlet property="cellImage" destination="57g-eV-Nbn" id="5Ai-WO-hfL"/>
+                <outlet property="cellLabel" destination="kX7-8G-PSx" id="Nj5-FP-ogq"/>
+                <outlet property="gradientView" destination="VI8-QW-OfU" id="iSX-YW-TcO"/>
+            </connections>
+            <point key="canvasLocation" x="23.664122137404579" y="64.788732394366207"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="0" width="1600" height="1059"/>
+        <image name="NoActiveLikeButton" width="42" height="42"/>
+        <namedColor name="YP Black">
+            <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YP White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

@@ -8,9 +8,10 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController, ImagesListViewPresenterDelegate {
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private var presenter: ImagesListViewPresenter?
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,9 +22,32 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         tableView.rowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showSingleImageSegueIdentifier {
+            guard
+                let viewController = segue.destination as? SingleImageViewController,
+                let indexPath = sender as? IndexPath,
+                let presenter = presenter
+            else {
+                print("Module ImagesListViewController->func (for segue: UIStoryboardSegue, sender: Any?)) -> Неверный приёмник сегвея ShowSingleImage")
+                return
+            }
+
+            let image = UIImage(named: presenter.photosName[indexPath.row])
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
+    }
 }
 
 extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
+    /// Используется для определения количества строк в секции
+    /// - Parameters:
+    ///   - tableView: Список
+    ///   - section: Индекс секции в списке
+    /// - Returns: Возвращает количество строк в секции списка
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let presenter = presenter else {
             return 1
@@ -53,6 +77,7 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
 
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {

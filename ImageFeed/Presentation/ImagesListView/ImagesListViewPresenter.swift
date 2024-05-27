@@ -11,7 +11,7 @@ import UIKit
 final class ImagesListViewPresenter {
     weak private var viewController: ImagesListViewPresenterDelegate?
 
-    private let photosName: [String] = Array(0..<20).map { "\($0)" }
+    let photosName: [String] = Array(0..<20).map { "\($0)" }
 
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
