@@ -49,9 +49,7 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
     ///   - section: Индекс секции в списке
     /// - Returns: Возвращает количество строк в секции списка
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let presenter = presenter else {
-            return 1
-        }
+        guard let presenter = presenter else { return 1 }
         return presenter.photosCount()
     }
 
@@ -68,9 +66,7 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = presenter?.getImageByCellIndex(row: indexPath.row) else {
-            return 0
-        }
+        guard let image = presenter?.getImageByCellIndex(row: indexPath.row) else { return 0 }
 
         let imageScale = tableView.bounds.width / image.size.width
         return image.size.height * imageScale
@@ -82,9 +78,7 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
 
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         cell.setupLayout()
-        guard let presenter = presenter else {
-            return
-        }
+        guard let presenter = presenter else { return }
         let cellViewModel = presenter.convert(row: indexPath.row)
         cell.showCellViewModel(cellViewModel)
     }

@@ -13,17 +13,21 @@ final class SingleImageViewController: UIViewController {
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var shareImageButton: UIButton!
 
+    /// Детальное изображение
     var image: UIImage? {
         didSet {
-            guard isViewLoaded else { return }
+            guard
+                isViewLoaded,
+                let image = image
+            else { return }
             imageView.image = image
-            guard let image = image else { return }
             rescaleAndCenterImageInScrollView(image: image)
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         imageView.image = image
         guard let image = image else { return }
         imageView.frame.size = image.size
@@ -32,10 +36,14 @@ final class SingleImageViewController: UIViewController {
         rescaleAndCenterImageInScrollView(image: image)
     }
 
-    @IBAction func backButtonTouchUpInside(_ sender: Any) {
+    /// Закрывает модальное окно с детальным изображением
+    /// - Parameter sender: объект, вызывающий событие
+    @IBAction private func backButtonTouchUpInside(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
 
+    /// Подгоняет размер и положение изображения в окне детального просмотра
+    /// - Parameter image: Изображение
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
@@ -51,9 +59,14 @@ final class SingleImageViewController: UIViewController {
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
+        if scrollView.bounds.height > imageView.frame.height {
+            scrollView.contentInset.top = (scrollView.bounds.height - imageView.frame.height) / 2
+        }
     }
 
-    @IBAction func shareImageButtonTouchUpInside(_ sender: Any) {
+    /// Обработчик нажатия кнопки "Поделиться изображением"
+    /// - Parameter sender: объект, генерирующий событие
+    @IBAction private func shareImageButtonTouchUpInside(_ sender: Any) {
         guard let image = imageView.image else { return }
         let items = [image]
         let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
@@ -62,10 +75,18 @@ final class SingleImageViewController: UIViewController {
 }
 
 extension SingleImageViewController: UIScrollViewDelegate {
+    /// Используется для определения визуального объекта, который требуется масштабировать внутри scroll-view
+    /// - Parameter scrollView: scroll-view, отображающий изображение
+    /// - Returns: Возвращает UIImageView с детальным изображнием, который масштабируется внутри scroll-view.
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
 
+    /// Обработчик окончания масштабирования содержимого scroll-view
+    /// - Parameters:
+    ///   - scrollView: scroll-view, отображающий изображение
+    ///   - view: контроллер изображения
+    ///   - scale: текущий масштаб
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         if scrollView.bounds.width > imageView.frame.width {
             scrollView.contentInset.left = (scrollView.bounds.width - imageView.frame.width) / 2
