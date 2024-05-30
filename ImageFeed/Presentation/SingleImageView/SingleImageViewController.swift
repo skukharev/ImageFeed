@@ -8,11 +8,13 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
+    // MARK: - IB Outlets
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var backButton: UIButton!
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var shareImageButton: UIButton!
 
+    // MARK: - Public Properties
     /// Детальное изображение
     var image: UIImage? {
         didSet {
@@ -25,6 +27,7 @@ final class SingleImageViewController: UIViewController {
         }
     }
 
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -36,12 +39,23 @@ final class SingleImageViewController: UIViewController {
         rescaleAndCenterImageInScrollView(image: image)
     }
 
+    // MARK: - IB Actions
+    /// Обработчик нажатия кнопки "Поделиться изображением"
+    /// - Parameter sender: объект, генерирующий событие
+    @IBAction private func shareImageButtonTouchUpInside(_ sender: Any) {
+        guard let image = imageView.image else { return }
+        let items = [image]
+        let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        present(activityController, animated: true)
+    }
+
     /// Закрывает модальное окно с детальным изображением
     /// - Parameter sender: объект, вызывающий событие
     @IBAction private func backButtonTouchUpInside(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
 
+    // MARK: - Private Methods
     /// Подгоняет размер и положение изображения в окне детального просмотра
     /// - Parameter image: Изображение
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
@@ -59,17 +73,9 @@ final class SingleImageViewController: UIViewController {
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
-
-    /// Обработчик нажатия кнопки "Поделиться изображением"
-    /// - Parameter sender: объект, генерирующий событие
-    @IBAction private func shareImageButtonTouchUpInside(_ sender: Any) {
-        guard let image = imageView.image else { return }
-        let items = [image]
-        let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        present(activityController, animated: true)
-    }
 }
 
+// MARK: - UIScrollViewDelegate
 extension SingleImageViewController: UIScrollViewDelegate {
     /// Используется для определения визуального объекта, который требуется масштабировать внутри scroll-view
     /// - Parameter scrollView: scroll-view, отображающий изображение

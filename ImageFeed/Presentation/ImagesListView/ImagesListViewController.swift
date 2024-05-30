@@ -8,11 +8,14 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController, ImagesListViewPresenterDelegate {
+    // MARK: - IB Outlets
     @IBOutlet private weak var tableView: UITableView!
 
+    // MARK: - Private Properties
     private var presenter: ImagesListViewPresenter?
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
 
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,6 +45,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
     }
 }
 
+// MARK: - UITableViewDataSource, UITableViewDelegate
 extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
     /// Используется для определения количества строк в секции
     /// - Parameters:

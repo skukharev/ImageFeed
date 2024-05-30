@@ -8,47 +8,74 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        createVisualElements()
-    }
-
-    /// Создаёт и размещает элементы управления в контроллере профиля пользователя
-    private func createVisualElements() {
-        // Фото профиля
+    // MARK: - Private Properties
+    /// Фото профиля
+    private lazy var profilePhoto: UIImageView = {
         let profilePhoto = UIImageView()
         profilePhoto.image = UIImage(named: "ProfilePhoto") ?? UIImage()
         profilePhoto.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(profilePhoto)
-        // Кнопка выхода из профиля
+        return profilePhoto
+    }()
+
+    /// Кнопка выхода из профиля
+    private lazy var exitButton: UIButton = {
         let exitButton = UIButton(type: .system)
         exitButton.setImage(UIImage(named: "ExitButton"), for: .normal)
         exitButton.tintColor = .ypRed
         exitButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(exitButton)
-        // Имя пользователя
+        return exitButton
+    }()
+
+    /// Имя пользователя
+    private lazy var userNameLabel: UILabel = {
         let userNameLabel = UILabel()
         userNameLabel.textColor = .ypWhite
         userNameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         userNameLabel.text = "Екатерина Новикова"
         userNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(userNameLabel)
-        // Логин пользователя
+        return userNameLabel
+    }()
+
+    /// Логин пользователя
+    private lazy var userLoginLabel: UILabel = {
         let userLoginLabel = UILabel()
         userLoginLabel.textColor = .ypGray
         userLoginLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         userLoginLabel.text = "@ekaterina_nov"
         userLoginLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(userLoginLabel)
-        // Комментарии пользователя
+        return userLoginLabel
+    }()
+
+    /// Комментарии пользователя
+    private lazy var userCommentsLabel: UILabel = {
         let userCommentsLabel = UILabel()
         userCommentsLabel.textColor = .ypWhite
         userCommentsLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         userCommentsLabel.text = "Hello, world!"
         userCommentsLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(userCommentsLabel)
+        return userCommentsLabel
+    }()
 
+    // MARK: - Overrides Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        addSubviews()
+        setupConstraints()
+    }
+
+    // MARK: - Private Methods
+    /// Создаёт элементы управления в контроллере профиля пользователя
+    private func addSubviews() {
+        view.addSubview(profilePhoto)
+        view.addSubview(exitButton)
+        view.addSubview(userNameLabel)
+        view.addSubview(userLoginLabel)
+        view.addSubview(userCommentsLabel)
+    }
+
+    /// Создаёт и размещает элементы управления в контроллере профиля пользователя
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             // Фото профиля
             profilePhoto.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
