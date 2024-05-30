@@ -7,5 +7,6 @@
 
 import Foundation
 
+/// Протокол делегата класса ImagesListViewPresenter
 protocol ImagesListViewPresenterDelegate: AnyObject {
 }

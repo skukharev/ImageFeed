@@ -13,12 +13,14 @@
 		070AE7012BE740D500D87AC8 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 070AE7002BE740D500D87AC8 /* Base */; };
 		070AE7032BE740D700D87AC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 070AE7022BE740D700D87AC8 /* Assets.xcassets */; };
 		070AE7062BE740D700D87AC8 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 070AE7052BE740D700D87AC8 /* Base */; };
+		073F084F2BF901D9005800A8 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073F084E2BF901D9005800A8 /* ProfileViewController.swift */; };
 		07CA2C5C2BF4E8F20057C81D /* ImagesListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CA2C5B2BF4E8F20057C81D /* ImagesListViewPresenter.swift */; };
 		07CA2C5E2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CA2C5D2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift */; };
 		07CA2C602BF4F6340057C81D /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CA2C5F2BF4F6340057C81D /* ImagesListCell.swift */; };
 		07CA2C622BF4F7450057C81D /* ImagesListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07CA2C612BF4F7450057C81D /* ImagesListCell.xib */; };
 		07CA2C642BF5213E0057C81D /* ImagesListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CA2C632BF5213E0057C81D /* ImagesListCellViewModel.swift */; };
 		07CA2C662BF526860057C81D /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CA2C652BF526860057C81D /* Array+Extensions.swift */; };
+		07D88F252BFA3F9600B3ACAB /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D88F242BFA3F9600B3ACAB /* SingleImageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,7 @@
 		070AE7022BE740D700D87AC8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		070AE7052BE740D700D87AC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		070AE7072BE740D700D87AC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		073F084E2BF901D9005800A8 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		07CA2C5B2BF4E8F20057C81D /* ImagesListViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListViewPresenter.swift; sourceTree = "<group>"; };
 		07CA2C5D2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListViewPresenterDelegate.swift; sourceTree = "<group>"; };
 		07CA2C5F2BF4F6340057C81D /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
@@ -38,6 +41,7 @@
 		07CA2C652BF526860057C81D /* Array+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		07CA2C692BF52FFE0057C81D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		07CA2C6A2BF52FFE0057C81D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		07D88F242BFA3F9600B3ACAB /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,12 +104,11 @@
 		07886D092BF3386200ADCC5E /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				07D88F292BFA497700B3ACAB /* ImagesListView */,
+				07D88F282BFA496600B3ACAB /* SingleImageView */,
+				07D88F272BFA495600B3ACAB /* ProfileView */,
+				07D88F262BFA492900B3ACAB /* ImagesListCell */,
 				070AE6FF2BE740D500D87AC8 /* Main.storyboard */,
-				070AE6FD2BE740D500D87AC8 /* ImagesListViewController.swift */,
-				07CA2C5B2BF4E8F20057C81D /* ImagesListViewPresenter.swift */,
-				07CA2C5D2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift */,
-				07CA2C5F2BF4F6340057C81D /* ImagesListCell.swift */,
-				07CA2C612BF4F7450057C81D /* ImagesListCell.xib */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -125,6 +128,41 @@
 			children = (
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		07D88F262BFA492900B3ACAB /* ImagesListCell */ = {
+			isa = PBXGroup;
+			children = (
+				07CA2C612BF4F7450057C81D /* ImagesListCell.xib */,
+				07CA2C5F2BF4F6340057C81D /* ImagesListCell.swift */,
+			);
+			path = ImagesListCell;
+			sourceTree = "<group>";
+		};
+		07D88F272BFA495600B3ACAB /* ProfileView */ = {
+			isa = PBXGroup;
+			children = (
+				073F084E2BF901D9005800A8 /* ProfileViewController.swift */,
+			);
+			path = ProfileView;
+			sourceTree = "<group>";
+		};
+		07D88F282BFA496600B3ACAB /* SingleImageView */ = {
+			isa = PBXGroup;
+			children = (
+				07D88F242BFA3F9600B3ACAB /* SingleImageViewController.swift */,
+			);
+			path = SingleImageView;
+			sourceTree = "<group>";
+		};
+		07D88F292BFA497700B3ACAB /* ImagesListView */ = {
+			isa = PBXGroup;
+			children = (
+				070AE6FD2BE740D500D87AC8 /* ImagesListViewController.swift */,
+				07CA2C5B2BF4E8F20057C81D /* ImagesListViewPresenter.swift */,
+				07CA2C5D2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift */,
+			);
+			path = ImagesListView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -228,6 +266,8 @@
 				07CA2C662BF526860057C81D /* Array+Extensions.swift in Sources */,
 				070AE6FC2BE740D500D87AC8 /* SceneDelegate.swift in Sources */,
 				07CA2C5E2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift in Sources */,
+				07D88F252BFA3F9600B3ACAB /* SingleImageViewController.swift in Sources */,
+				073F084F2BF901D9005800A8 /* ProfileViewController.swift in Sources */,
 				07CA2C642BF5213E0057C81D /* ImagesListCellViewModel.swift in Sources */,
 				07CA2C602BF4F6340057C81D /* ImagesListCell.swift in Sources */,
 			);
