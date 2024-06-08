@@ -33,7 +33,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
                 let indexPath = sender as? IndexPath,
                 let presenter = presenter
             else {
-                print("Module ImagesListViewController->func (for segue: UIStoryboardSegue, sender: Any?)) -> Неверный приёмник сегвея ShowSingleImage")
+                print(#fileID, #function, #line, "Неверный приёмник сегвея ShowSingleImage")
                 return
             }
 
@@ -49,19 +49,24 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
 extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
     /// Используется для определения количества строк в секции
     /// - Parameters:
-    ///   - tableView: Список
+    ///   - tableView: Табличное представление со списком фото
     ///   - section: Индекс секции в списке
     /// - Returns: Возвращает количество строк в секции списка
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let presenter = presenter else { return 1 }
         return presenter.photosCount()
     }
-
+    
+    /// Используется для определения ячейки, которую требуется отобразить в заданной позиции табличного представления
+    /// - Parameters:
+    ///   - tableView: Табличное представление со списком фото
+    ///   - indexPath: Путь индекса строки в списке, для которой необходимо вернуть сконфигурированную ячейку
+    /// - Returns: Заполненный необходимыми данными экземпляр ImagesListCell, отображающий ячейку с фото из Unsplash
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
 
         guard let imageListCell = cell as? ImagesListCell else {
-            print("Module ImagesListViewController->extension ImagesListViewController->func (_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell - ошибка приведения типов")
+            print(#fileID, #function, #line, "Ошибка приведения типов")
             return UITableViewCell()
         }
 

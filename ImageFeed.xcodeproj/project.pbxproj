@@ -107,7 +107,6 @@
 				07D88F292BFA497700B3ACAB /* ImagesListView */,
 				07D88F282BFA496600B3ACAB /* SingleImageView */,
 				07D88F272BFA495600B3ACAB /* ProfileView */,
-				07D88F262BFA492900B3ACAB /* ImagesListCell */,
 				070AE6FF2BE740D500D87AC8 /* Main.storyboard */,
 			);
 			path = Presentation;
@@ -158,6 +157,7 @@
 		07D88F292BFA497700B3ACAB /* ImagesListView */ = {
 			isa = PBXGroup;
 			children = (
+				07D88F262BFA492900B3ACAB /* ImagesListCell */,
 				070AE6FD2BE740D500D87AC8 /* ImagesListViewController.swift */,
 				07CA2C5B2BF4E8F20057C81D /* ImagesListViewPresenter.swift */,
 				07CA2C5D2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift */,
@@ -175,7 +175,7 @@
 				070AE6F22BE740D500D87AC8 /* Sources */,
 				070AE6F32BE740D500D87AC8 /* Frameworks */,
 				070AE6F42BE740D500D87AC8 /* Resources */,
-				07886D0C2BF33A8100ADCC5E /* ShellScript */,
+				07886D0C2BF33A8100ADCC5E /* Swiftlint */,
 			);
 			buildRules = (
 			);
@@ -235,7 +235,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		07886D0C2BF33A8100ADCC5E /* ShellScript */ = {
+		07886D0C2BF33A8100ADCC5E /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -245,6 +245,7 @@
 			);
 			inputPaths = (
 			);
+			name = Swiftlint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
