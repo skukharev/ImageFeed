@@ -56,7 +56,7 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
         guard let presenter = presenter else { return 1 }
         return presenter.photosCount()
     }
-    
+
     /// Используется для определения ячейки, которую требуется отобразить в заданной позиции табличного представления
     /// - Parameters:
     ///   - tableView: Табличное представление со списком фото
