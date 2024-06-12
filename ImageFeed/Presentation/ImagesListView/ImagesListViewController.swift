@@ -8,14 +8,17 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController, ImagesListViewPresenterDelegate {
-    // MARK: - IB Outlets
+    // MARK: - IBOutlet
+
     @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - Private Properties
+
     private var presenter: ImagesListViewPresenter?
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
 
-    // MARK: - Overrides Methods
+    // MARK: - UIViewController
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -45,8 +48,9 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
     }
 }
 
-// MARK: - UITableViewDataSource, UITableViewDelegate
-extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
+// MARK: - UITableViewDataSource
+
+extension ImagesListViewController: UITableViewDataSource {
     /// Используется для определения количества строк в секции
     /// - Parameters:
     ///   - tableView: Табличное представление со списком фото
@@ -74,6 +78,21 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
         return imageListCell
     }
 
+    /// Используется для конфигурирования и отображения заданной ы ячейки таблицы
+    /// - Parameters:
+    ///   - cell: Отображаемая ячейка
+    ///   - indexPath: Путь индекса строки в секции таблицы
+    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
+        cell.setupLayout()
+        guard let presenter = presenter else { return }
+        let cellViewModel = presenter.convert(row: indexPath.row)
+        cell.showCellViewModel(cellViewModel)
+    }
+}
+
+// MARK: - UITableViewDelegate
+
+extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = presenter?.getImageByCellIndex(row: indexPath.row) else { return 0 }
 
@@ -83,12 +102,5 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
-    }
-
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        cell.setupLayout()
-        guard let presenter = presenter else { return }
-        let cellViewModel = presenter.convert(row: indexPath.row)
-        cell.showCellViewModel(cellViewModel)
     }
 }

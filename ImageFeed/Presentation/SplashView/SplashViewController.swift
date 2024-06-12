@@ -9,10 +9,12 @@ import UIKit
 
 final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     // MARK: - Private Properties
+
     private let oauth2TokenStorage = OAuth2TokenStorage.shared
     private let showAuthFlowSegueIdentifier = "ShowAuthFlow"
 
-    // MARK: - Initializers
+    // MARK: - UIViewController
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -23,7 +25,6 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
         }
     }
 
-    // MARK: - Overrides Methods
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showAuthFlowSegueIdentifier {
             guard
@@ -39,12 +40,14 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     }
 
     // MARK: - Public Methods
+
     func didAuthenticate(_ viewController: AuthViewController) {
         viewController.dismiss(animated: true)
         switchToTabBarController()
     }
 
     // MARK: - Private Methods
+
     private func switchToTabBarController() {
         // Получаем экземпляр `window` приложения
         guard let window = UIApplication.shared.windows.first else {

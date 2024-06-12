@@ -9,22 +9,25 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     // MARK: - Public Properties
+
     weak var delegate: AuthViewControllerDelegate?
 
     // MARK: - Private Properties
+
     private let oauth2Service = OAuth2Service.shared
     private let oauth2TokenStorage = OAuth2TokenStorage.shared
+    private let showWebViewSegueIdentifer = "ShowWebView"
 
-    // MARK: - Initializers
+    // MARK: - UIViewController
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureNavigationControllerBackButton()
     }
 
-    // MARK: - Overrides Methods
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ShowWebView" {
+        if segue.identifier == showWebViewSegueIdentifer {
             guard let webViewController = segue.destination as? WebViewController else {
                 assertionFailure("Экземпляр WebViewController не существует")
                 return
@@ -36,6 +39,7 @@ final class AuthViewController: UIViewController {
     }
 
     // MARK: - Private Methods
+
     private func configureNavigationControllerBackButton() {
         navigationController?.navigationBar.backIndicatorImage = UIImage(named: "backButton")
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "backButton")
@@ -57,8 +61,6 @@ extension AuthViewController: WebViewControllerDelegate {
     }
 
     func webViewController(_ viewController: WebViewController, didAuthenticateWithCode code: String) {
-        print(#fileID, #function, #line, "Успешная аутентификация с кодом \(code)")
-
         let utilityQueue = DispatchQueue(label: "oauth2ServiceQueue", qos: .utility)
         utilityQueue.async {[weak self] in
             guard let self = self else {
@@ -71,7 +73,7 @@ extension AuthViewController: WebViewControllerDelegate {
                         self.oauth2TokenStorage.token = token
                         self.delegate?.didAuthenticate(self)
                     case .failure(let error):
-                        print(#fileID, #function, #line, "Процесс авторизации завершился с ошибкой \(code)")
+                        print(#fileID, #function, #line, "Процесс авторизации завершился с ошибкой \(error)")
                     }
                 }
             }

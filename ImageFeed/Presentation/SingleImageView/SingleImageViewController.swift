@@ -8,13 +8,8 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
-    // MARK: - IB Outlets
-    @IBOutlet private weak var imageView: UIImageView!
-    @IBOutlet private weak var backButton: UIButton!
-    @IBOutlet private weak var scrollView: UIScrollView!
-    @IBOutlet private weak var shareImageButton: UIButton!
-
     // MARK: - Public Properties
+
     /// Детальное изображение
     var image: UIImage? {
         didSet {
@@ -27,7 +22,15 @@ final class SingleImageViewController: UIViewController {
         }
     }
 
-    // MARK: - View Life Cycles
+    // MARK: - IBOutlet
+
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var backButton: UIButton!
+    @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var shareImageButton: UIButton!
+
+    // MARK: - UIViewController
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,7 +42,8 @@ final class SingleImageViewController: UIViewController {
         rescaleAndCenterImageInScrollView(image: image)
     }
 
-    // MARK: - IB Actions
+    // MARK: - IBAction
+
     /// Обработчик нажатия кнопки "Поделиться изображением"
     /// - Parameter sender: объект, генерирующий событие
     @IBAction private func shareImageButtonTouchUpInside(_ sender: Any) {
@@ -56,6 +60,7 @@ final class SingleImageViewController: UIViewController {
     }
 
     // MARK: - Private Methods
+
     /// Подгоняет размер и положение изображения в окне детального просмотра
     /// - Parameter image: Изображение
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
@@ -76,6 +81,7 @@ final class SingleImageViewController: UIViewController {
 }
 
 // MARK: - UIScrollViewDelegate
+
 extension SingleImageViewController: UIScrollViewDelegate {
     /// Используется для определения визуального объекта, который требуется масштабировать внутри scroll-view
     /// - Parameter scrollView: scroll-view, отображающий изображение

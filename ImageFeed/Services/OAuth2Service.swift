@@ -9,17 +9,21 @@ import Foundation
 
 final class OAuth2Service {
     // MARK: - Public Properties
+
     static let shared = OAuth2Service()
 
     // MARK: - Private Properties
+
     private let networkClient: NetworkClientProtocol
 
     // MARK: - Initializers
+
     private init() {
         self.networkClient = NetworkClient()
     }
 
     // MARK: - Public Methods
+
     /// Получает Bearer-токен для авторизации в Unsplash
     /// - Parameters:
     ///   - code: Код авторизации, полученный при аутентификации в Unsplash (https://unsplash.com/oauth/authorize)
@@ -31,7 +35,7 @@ final class OAuth2Service {
             switch result {
             case .success(let data):
                 do {
-                    let token = try JSONDecoder().decode(UnsplashToken.self, from: data)
+                    let token = try SnakeCaseJSONDecoder().decode(UnsplashToken.self, from: data)
                     handler(.success(token.accessToken))
                 } catch {
                     handler(.failure(error))
@@ -43,6 +47,7 @@ final class OAuth2Service {
     }
 
     // MARK: - Private Methods
+
     /// Формирует ссылку для получения Bearer-токена авторизации "POST https://unsplash.com/oauth/token" согласно API Unsplash
     /// - Parameter code: Код, полученный при аутентификации в Unsplash
     /// - Returns: Сформированный URL для получения Bearer-токена

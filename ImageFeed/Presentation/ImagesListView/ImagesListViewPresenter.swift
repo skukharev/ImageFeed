@@ -10,9 +10,11 @@ import UIKit
 
 final class ImagesListViewPresenter {
     // MARK: - Public Properties
+
     let photosName: [String] = Array(0..<20).map { "\($0)" }
 
     // MARK: - Private Properties
+
     weak private var viewController: ImagesListViewPresenterDelegate?
 
     private lazy var dateFormatter: DateFormatter = {
@@ -23,11 +25,13 @@ final class ImagesListViewPresenter {
     }()
 
     // MARK: - Initializers
+
     init (viewController: ImagesListViewPresenterDelegate? = nil) {
         self.viewController = viewController
     }
 
     // MARK: - Public Methods
+
     /// Используется для вычисления размера списка изображений
     /// - Returns: возвращает размер списка изображений
     func photosCount() -> Int {

@@ -9,33 +9,38 @@ import UIKit
 import WebKit
 
 final class WebViewController: UIViewController, WKNavigationDelegate {
-    // MARK: - IB Outlets
+    // MARK: - Public Properties
+
+    weak var delegate: WebViewControllerDelegate?
+
+    // MARK: - IBOutlet
+
     @IBOutlet weak private var webView: WKWebView!
     @IBOutlet weak private var progressView: UIProgressView!
 
-    // MARK: - Public Properties
-    weak var delegate: WebViewControllerDelegate?
-
     // MARK: - Private Properties
+
     private var observation: NSKeyValueObservation?
 
     // MARK: - Initializers
+
+    deinit {
+        self.observation = nil
+    }
+
+    // MARK: - UIViewController
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         webView.navigationDelegate = self
         loadAuthView()
 
-        observation = webView.observe(\WKWebView.estimatedProgress, options: [.new]) { _, _ in
-            self.updateProgressView()
+        observation = webView.observe(\WKWebView.estimatedProgress, options: [.new]) { [weak self] _, _ in
+            self?.updateProgressView()
         }
     }
 
-    deinit {
-        self.observation = nil
-    }
-
-    // MARK: - Overrides Methods
     /// Используется для обработки редиректа со страницы аутентификации Unsplash
     /// - Parameters:
     ///   - webView: Веб-контроллер
@@ -51,6 +56,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate {
     }
 
     // MARK: - Private Methods
+
     /// Загружает окно авторизации Unsplash во встроенном браузере
     private func loadAuthView() {
         guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
@@ -91,7 +97,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate {
 
     /// Используется для обновления состояния элемента, отображающего прогресс загрузки страницы аутентификации
     private func updateProgressView() {
-        progressView.progress = Float(webView.estimatedProgress)
+        progressView.setProgress(Float(webView.estimatedProgress), animated: true)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
 }

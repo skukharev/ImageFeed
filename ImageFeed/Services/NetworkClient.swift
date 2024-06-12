@@ -9,6 +9,7 @@ import Foundation
 
 struct NetworkClient: NetworkClientProtocol {
     // MARK: - Private Properties
+
     private enum NetworkError: Error {
         case httpStatusCode(Int)
         case urlRequestError(Error)
@@ -16,6 +17,7 @@ struct NetworkClient: NetworkClientProtocol {
     }
 
     // MARK: - Public Methods
+
     func fetch(request: URLRequest, handler: @escaping (Result<Data, Error>) -> Void) {
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
