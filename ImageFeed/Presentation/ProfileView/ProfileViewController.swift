@@ -9,6 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     // MARK: - Private Properties
+
     /// Фото профиля
     private lazy var profilePhoto: UIImageView = {
         let profilePhoto = UIImageView()
@@ -56,7 +57,8 @@ final class ProfileViewController: UIViewController {
         return userCommentsLabel
     }()
 
-    // MARK: - Overrides Methods
+    // MARK: - UIViewController
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -65,6 +67,7 @@ final class ProfileViewController: UIViewController {
     }
 
     // MARK: - Private Methods
+
     /// Создаёт элементы управления в контроллере профиля пользователя
     private func addSubviews() {
         view.addSubview(profilePhoto)

@@ -9,13 +9,22 @@ import Foundation
 import UIKit
 
 final class ImagesListCell: UITableViewCell {
+    // MARK: - Public Properties
+
     static let reuseIdentifier = "ImagesListCell"
-    private var isGradientAdded = false
+
+    // MARK: - IBOutlet
 
     @IBOutlet private weak var cellButton: UIButton!
     @IBOutlet private weak var cellImage: UIImageView!
     @IBOutlet private weak var gradientView: UIView!
     @IBOutlet private weak var cellLabel: UILabel!
+
+    // MARK: - Private Properties
+
+    private var isGradientAdded = false
+
+    // MARK: - Public Methods
 
     /// Производит настройки размещения ячейки таблицы в соответствии с техническим заданием
     func setupLayout() {
