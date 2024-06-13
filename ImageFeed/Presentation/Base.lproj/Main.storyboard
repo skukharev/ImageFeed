@@ -252,18 +252,19 @@
                             </wkWebView>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" translatesAutoresizingMaskIntoConstraints="NO" id="fO5-NL-dZv">
                                 <rect key="frame" x="0.0" y="56" width="401" height="2.6666666666666643"/>
+                                <color key="tintColor" name="YP Black"/>
                             </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="yT4-7O-jIq"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="fO5-NL-dZv" firstAttribute="leading" secondItem="fWF-kc-yTj" secondAttribute="leading" id="BNm-ap-PFd"/>
+                            <constraint firstItem="fO5-NL-dZv" firstAttribute="leading" secondItem="yT4-7O-jIq" secondAttribute="leading" id="BNm-ap-PFd"/>
                             <constraint firstAttribute="trailing" secondItem="oQH-mS-FTP" secondAttribute="trailing" id="KcC-p1-U7k"/>
                             <constraint firstItem="fO5-NL-dZv" firstAttribute="top" secondItem="yT4-7O-jIq" secondAttribute="top" id="SAu-bT-JPV"/>
                             <constraint firstAttribute="bottom" secondItem="oQH-mS-FTP" secondAttribute="bottom" id="Vbh-Zp-9gP"/>
                             <constraint firstItem="oQH-mS-FTP" firstAttribute="top" secondItem="yT4-7O-jIq" secondAttribute="top" id="Xxm-N1-3q3"/>
                             <constraint firstItem="oQH-mS-FTP" firstAttribute="leading" secondItem="fWF-kc-yTj" secondAttribute="leading" id="knE-fv-4EF"/>
-                            <constraint firstAttribute="trailing" secondItem="fO5-NL-dZv" secondAttribute="trailingMargin" id="z1K-gs-JBi"/>
+                            <constraint firstItem="yT4-7O-jIq" firstAttribute="trailing" secondItem="fO5-NL-dZv" secondAttribute="trailingMargin" id="z1K-gs-JBi"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="wwB-md-cIx"/>
@@ -274,7 +275,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fxd-Es-t5x" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-283" y="-457"/>
+            <point key="canvasLocation" x="-283.20610687022901" y="-457.04225352112678"/>
         </scene>
         <!--Splash View Controller-->
         <scene sceneID="ghm-C0-Kr1">

@@ -25,6 +25,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate {
     // MARK: - Initializers
 
     deinit {
+        self.observation?.invalidate()
         self.observation = nil
     }
 
