@@ -6,9 +6,14 @@
 //
 
 import Foundation
+import UIKit
 
 protocol AuthViewControllerDelegate: AnyObject {
     /// Вызывается при успешной авторизации в Unsplash
     /// - Parameter viewController: экземпляр контроллера представления AuthViewController, в котором производится авторизация в Unsplash
-    func didAuthenticate(_ viewController: AuthViewController)
+    func didAuthenticate(_ viewController: AuthViewController?)
+
+    /// Вызывается при ошибке авторизации в Unsplash
+    /// - Parameter viewController: экземпляр контроллера представления WebViewController, в котором производится аутентификация в Unsplash
+    func didAuthenticateWithError(_ viewController: AuthViewController?)
 }

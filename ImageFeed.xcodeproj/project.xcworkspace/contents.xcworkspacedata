@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/skukharev/Library/Mobile Documents/com~apple~CloudDocs/Projects/imageFeed/ImageFeed.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

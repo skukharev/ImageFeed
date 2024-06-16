@@ -57,13 +57,20 @@ final class ProfileViewController: UIViewController {
         return userCommentsLabel
     }()
 
+    private var presenter: ProfileViewPresenter?
+
     // MARK: - UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        presenter = ProfileViewPresenter(viewController: self)
+
         addSubviews()
         setupConstraints()
+
+        UIBlockingProgressHUD.show()
+        presenter?.loadProfileData()
     }
 
     // MARK: - Private Methods
@@ -100,5 +107,32 @@ final class ProfileViewController: UIViewController {
             userCommentsLabel.topAnchor.constraint(equalTo: userLoginLabel.bottomAnchor, constant: 8),
             userCommentsLabel.leftAnchor.constraint(equalTo: profilePhoto.leftAnchor)
         ])
+    }
+}
+
+// MARK: - ProfileViewPresenterDelegate
+
+extension ProfileViewController: ProfileViewPresenterDelegate {
+    func showLoadingProfileError(withError: Error) {
+        DispatchQueue.main.async { [weak self] in
+            UIBlockingProgressHUD.dismiss()
+
+            let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось получить данные профиля пользователя", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self?.present(alert, animated: true)
+        }
+    }
+
+    func showUserData(userProfile: UnsplashCurrentUserProfile) {
+        DispatchQueue.main.async { [weak self] in
+            UIBlockingProgressHUD.dismiss()
+
+            self?.userNameLabel.text = userProfile.firstName
+            if let lastName = userProfile.lastName {
+                self?.userNameLabel.text?.append(contentsOf: " " + lastName)
+            }
+            self?.userLoginLabel.text = "@" + userProfile.username
+            self?.userCommentsLabel.text = userProfile.bio ?? ""
+        }
     }
 }

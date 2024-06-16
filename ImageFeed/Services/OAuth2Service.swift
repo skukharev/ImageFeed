@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum AuthServiceError: Error {
+    case invalidRequest
+    case inTheExecution
+}
+
 final class OAuth2Service {
     // MARK: - Public Properties
 
@@ -14,7 +19,8 @@ final class OAuth2Service {
 
     // MARK: - Private Properties
 
-    private let networkClient: NetworkClientProtocol
+    private var networkClient: NetworkClientProtocol
+    private var lastCode: String?
 
     // MARK: - Initializers
 
@@ -29,9 +35,22 @@ final class OAuth2Service {
     ///   - code: Код авторизации, полученный при аутентификации в Unsplash (https://unsplash.com/oauth/authorize)
     ///   - handler: Обработчик, вызываемые по окончанию процесса авторизации в Unsplash
     func fetchOAuthToken(code: String, handler: @escaping (Result<String, Error>) -> Void) {
-        guard let request = constructOAuthRequest(code: code) else { return }
+        assert(Thread.isMainThread, "Вызов fetchOAuthToken должен производиться из главного потока во избежание гонки")
 
-        networkClient.fetch(request: request) {result in
+        if lastCode == code {
+            handler(.failure(AuthServiceError.inTheExecution))
+            return
+        }
+
+        guard let request = constructOAuthRequest(code: code) else {  handler(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+
+        lastCode = code
+
+        networkClient.fetch(request: request) {[weak self] result in
+            self?.lastCode = nil
+
             switch result {
             case .success(let data):
                 do {

@@ -168,18 +168,18 @@
             <objects>
                 <viewController id="Fi1-cD-Hvp" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="w9e-Jk-w9e">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="AuthorizationScreen" translatesAutoresizingMaskIntoConstraints="NO" id="gAr-tY-Xi9">
-                                <rect key="frame" x="166.66666666666666" y="419" width="60" height="60"/>
+                                <rect key="frame" x="166.66666666666666" y="418" width="60" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="60" id="CHs-GD-rCn"/>
                                     <constraint firstAttribute="height" constant="60" id="CXZ-zy-pG4"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7LC-63-ury">
-                                <rect key="frame" x="16" y="670" width="361" height="48"/>
+                                <rect key="frame" x="16" y="680" width="361" height="48"/>
                                 <color key="backgroundColor" name="YP White"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="1P0-TQ-RK4"/>
@@ -239,11 +239,11 @@
             <objects>
                 <viewController id="53Z-Nq-bVM" customClass="WebViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fWF-kc-yTj">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oQH-mS-FTP">
-                                <rect key="frame" x="0.0" y="56" width="393" height="786"/>
+                                <rect key="frame" x="0.0" y="44" width="393" height="808"/>
                                 <color key="backgroundColor" name="YP White"/>
                                 <wkWebViewConfiguration key="configuration">
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
@@ -251,7 +251,7 @@
                                 </wkWebViewConfiguration>
                             </wkWebView>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" translatesAutoresizingMaskIntoConstraints="NO" id="fO5-NL-dZv">
-                                <rect key="frame" x="0.0" y="56" width="401" height="2.6666666666666643"/>
+                                <rect key="frame" x="0.0" y="44" width="401" height="2.6666666666666643"/>
                                 <color key="tintColor" name="YP Black"/>
                             </progressView>
                         </subviews>
@@ -300,7 +300,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <segue destination="3QN-Tb-Sq9" kind="presentation" identifier="ShowAuthFlow" id="32I-us-Y9D"/>
+                        <segue destination="3QN-Tb-Sq9" kind="presentation" identifier="ShowAuthFlow" modalPresentationStyle="fullScreen" id="32I-us-Y9D"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="65N-Yo-PKY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -313,7 +313,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3QN-Tb-Sq9" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ULQ-AR-EhV">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="56"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

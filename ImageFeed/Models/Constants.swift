@@ -22,4 +22,8 @@ enum Constants {
     static let unsplashAuthorizeURLString = defaultBaseAuthURLString + "/authorize"
     /// URL для генерации Bearer-токена в Unsplash
     static let unsplashTokenURLString = defaultBaseAuthURLString + "/token"
+    /// URL для получения профиля текущего профиля
+    static let unsplashMeURLString = defaultBaseURLString + "/me"
+    /// URL для полученя публичного профиля заданного пользователя
+    static let unsplashUsersProfileURLString = defaultBaseURLString + "/users"
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct NetworkClient: NetworkClientProtocol {
+final class NetworkClient: NetworkClientProtocol {
     // MARK: - Private Properties
 
     private enum NetworkError: Error {
@@ -16,10 +16,19 @@ struct NetworkClient: NetworkClientProtocol {
         case urlSessionError
     }
 
+    private var urlSessionDataTask: URLSessionDataTask?
+
     // MARK: - Public Methods
 
     func fetch(request: URLRequest, handler: @escaping (Result<Data, Error>) -> Void) {
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        if urlSessionDataTask != nil {
+            urlSessionDataTask?.cancel()
+            urlSessionDataTask = nil
+        }
+
+        urlSessionDataTask = URLSession.shared.dataTask(with: request) {[weak self] data, response, error in
+            self?.urlSessionDataTask = nil
+
             if let error = error {
                 handler(.failure(NetworkError.urlRequestError(error)))
                 return
@@ -35,6 +44,6 @@ struct NetworkClient: NetworkClientProtocol {
             }
             handler(.success(data))
         }
-        task.resume()
+        urlSessionDataTask?.resume()
     }
 }

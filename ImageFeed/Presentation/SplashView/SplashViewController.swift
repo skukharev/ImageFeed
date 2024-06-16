@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SplashViewController: UIViewController, AuthViewControllerDelegate {
+final class SplashViewController: UIViewController {
     // MARK: - Private Properties
 
     private let oauth2TokenStorage = OAuth2TokenStorage.shared
@@ -39,13 +39,6 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
         }
     }
 
-    // MARK: - Public Methods
-
-    func didAuthenticate(_ viewController: AuthViewController) {
-        viewController.dismiss(animated: true)
-        switchToTabBarController()
-    }
-
     // MARK: - Private Methods
 
     private func switchToTabBarController() {
@@ -61,5 +54,38 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
 
         // Установим в `rootViewController` полученный контроллер
         window.rootViewController = tabBarController
+
+        // TODO: Выключить загрузку данных сразу после авторизации в Unsplash после изучения анимации в 12 спринте
+        guard let token = oauth2TokenStorage.token else { return }
+        UIBlockingProgressHUD.show()
+        let profileService = ProfileService.shared
+        profileService.fetchCurrentUserProfile(withAccessToken: token) { result in
+            DispatchQueue.main.async {
+                UIBlockingProgressHUD.dismiss()
+                switch result {
+                case .success(let currentUserProfile):
+                    profileService.currentUserProfile = currentUserProfile
+                case .failure(let error):
+                    print(#fileID, #function, #line, "Процесс получения данных профиля завершился с ошибкой \(error)")
+                }
+            }
+        }
+    }
+}
+
+// MARK: - AuthViewControllerDelegate
+
+extension SplashViewController: AuthViewControllerDelegate {
+    func didAuthenticate(_ viewController: AuthViewController?) {
+        viewController?.dismiss(animated: true)
+        switchToTabBarController()
+    }
+
+    func didAuthenticateWithError(_ viewController: AuthViewController?) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            viewController?.present(alert, animated: true)
+        }
     }
 }

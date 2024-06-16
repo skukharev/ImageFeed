@@ -61,19 +61,21 @@ extension AuthViewController: WebViewControllerDelegate {
     }
 
     func webViewController(_ viewController: WebViewController, didAuthenticateWithCode code: String) {
-        let utilityQueue = DispatchQueue(label: "oauth2ServiceQueue", qos: .utility)
-        utilityQueue.async {[weak self] in
-            guard let self = self else {
-                return
-            }
-            self.oauth2Service.fetchOAuthToken(code: code) {result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let token):
-                        self.oauth2TokenStorage.token = token
-                        self.delegate?.didAuthenticate(self)
-                    case .failure(let error):
+        navigationController?.popViewController(animated: true)
+        UIBlockingProgressHUD.show()
+
+        oauth2Service.fetchOAuthToken(code: code) {[weak self] result in
+            DispatchQueue.main.async {
+                UIBlockingProgressHUD.dismiss()
+
+                switch result {
+                case .success(let token):
+                    self?.oauth2TokenStorage.token = token
+                    self?.delegate?.didAuthenticate(self)
+                case .failure(let error):
+                    if error as? AuthServiceError != .inTheExecution {
                         print(#fileID, #function, #line, "Процесс авторизации завершился с ошибкой \(error)")
+                        self?.delegate?.didAuthenticateWithError(self)
                     }
                 }
             }

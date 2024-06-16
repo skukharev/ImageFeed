@@ -8,7 +8,7 @@
 import UIKit
 import WebKit
 
-final class WebViewController: UIViewController, WKNavigationDelegate {
+final class WebViewController: UIViewController {
     // MARK: - Public Properties
 
     weak var delegate: WebViewControllerDelegate?
@@ -42,26 +42,12 @@ final class WebViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    /// Используется для обработки редиректа со страницы аутентификации Unsplash
-    /// - Parameters:
-    ///   - webView: Веб-контроллер
-    ///   - navigationAction: Объект с данными о навигации в веб-контроллере
-    ///   - decisionHandler: Обработчик события
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if let code = code(from: navigationAction) {
-            delegate?.webViewController(self, didAuthenticateWithCode: code)
-            decisionHandler(.cancel)
-        } else {
-            decisionHandler(.allow)
-        }
-    }
-
     // MARK: - Private Methods
 
     /// Загружает окно авторизации Unsplash во встроенном браузере
     private func loadAuthView() {
         guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
-            print(#fileID, #function, #line, "Ошибка сборки URL из строковой константы")
+            assertionFailure("Ошибка сборки URL из строковой константы")
             return
         }
 
@@ -73,7 +59,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate {
         ]
 
         guard let url = urlComponents.url else {
-            print(#fileID, #function, #line, "Ошибка сборки URL из строковой константы")
+            assertionFailure("Ошибка сборки URL из строковой константы")
             return
         }
         let request = URLRequest(url: url)
@@ -100,5 +86,23 @@ final class WebViewController: UIViewController, WKNavigationDelegate {
     private func updateProgressView() {
         progressView.setProgress(Float(webView.estimatedProgress), animated: true)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    }
+}
+
+// MARK: - WKNavigationDelegate
+
+extension WebViewController: WKNavigationDelegate {
+    /// Используется для обработки редиректа со страницы аутентификации Unsplash
+    /// - Parameters:
+    ///   - webView: Веб-контроллер
+    ///   - navigationAction: Объект с данными о навигации в веб-контроллере
+    ///   - decisionHandler: Обработчик события
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let code = code(from: navigationAction) {
+            delegate?.webViewController(self, didAuthenticateWithCode: code)
+            decisionHandler(.cancel)
+        } else {
+            decisionHandler(.allow)
+        }
     }
 }
