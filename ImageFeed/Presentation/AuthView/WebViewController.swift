@@ -22,13 +22,6 @@ final class WebViewController: UIViewController {
 
     private var observation: NSKeyValueObservation?
 
-    // MARK: - Initializers
-
-    deinit {
-        self.observation?.invalidate()
-        self.observation = nil
-    }
-
     // MARK: - UIViewController
 
     override func viewDidLoad() {

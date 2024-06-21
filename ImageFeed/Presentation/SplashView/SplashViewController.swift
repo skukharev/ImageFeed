@@ -55,21 +55,10 @@ final class SplashViewController: UIViewController {
         // Установим в `rootViewController` полученный контроллер
         window.rootViewController = tabBarController
 
-        // TODO: Выключить загрузку данных сразу после авторизации в Unsplash после изучения анимации в 12 спринте
-        guard let token = oauth2TokenStorage.token else { return }
         UIBlockingProgressHUD.show()
-        let profileService = ProfileService.shared
-        profileService.fetchCurrentUserProfile(withAccessToken: token) { result in
-            DispatchQueue.main.async {
-                UIBlockingProgressHUD.dismiss()
-                switch result {
-                case .success(let currentUserProfile):
-                    profileService.currentUserProfile = currentUserProfile
-                case .failure(let error):
-                    print(#fileID, #function, #line, "Процесс получения данных профиля завершился с ошибкой \(error)")
-                }
-            }
-        }
+        let profileViewPresenter = ProfileViewPresenter(viewController: nil)
+        profileViewPresenter.loadProfileData()
+        UIBlockingProgressHUD.dismiss()
     }
 }
 

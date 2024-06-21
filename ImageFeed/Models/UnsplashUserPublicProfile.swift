@@ -8,7 +8,7 @@
 import Foundation
 
 struct ProfileImage: Codable {
-    let small, medium, large: String?
+    let small: String?
 }
 
 ///  Структура ответа Unsplash при успешном выполнении запроса https://api.unsplash.com/users/:username, получающего данные публичного профиля заданного пользователя

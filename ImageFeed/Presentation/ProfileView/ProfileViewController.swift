@@ -135,4 +135,8 @@ extension ProfileViewController: ProfileViewPresenterDelegate {
             self?.userCommentsLabel.text = userProfile.bio ?? ""
         }
     }
+
+    /// Обновляет аватар пользователя
+    func updateAvatar(withURL url: URL) {
+    }
 }

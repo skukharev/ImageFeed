@@ -10,4 +10,5 @@ import Foundation
 protocol ProfileViewPresenterDelegate: AnyObject {
     func showUserData(userProfile: UnsplashCurrentUserProfile)
     func showLoadingProfileError(withError: Error)
+    func updateAvatar(withURL url: URL)
 }

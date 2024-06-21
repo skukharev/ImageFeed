@@ -48,17 +48,12 @@ final class OAuth2Service {
 
         lastCode = code
 
-        networkClient.fetch(request: request) {[weak self] result in
+        networkClient.objectFetch(request: request) { [weak self] (result: Result<UnsplashToken, any Error>) in
             self?.lastCode = nil
 
             switch result {
-            case .success(let data):
-                do {
-                    let token = try SnakeCaseJSONDecoder().decode(UnsplashToken.self, from: data)
-                    handler(.success(token.accessToken))
-                } catch {
-                    handler(.failure(error))
-                }
+            case .success(let token):
+                handler(.success(token.accessToken))
             case .failure(let error):
                 handler(.failure(error))
             }
