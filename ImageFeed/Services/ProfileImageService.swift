@@ -27,7 +27,7 @@ final class ProfileImageService {
 
     // MARK: - Private Properties
 
-    private var inTheFetchCurrentUserPublicPofileRequest = false
+    private var sessionTask: URLSessionTask?
 
     // MARK: - Initializers
 
@@ -41,8 +41,8 @@ final class ProfileImageService {
     func fetchProfileImageURL(withAccessToken token: String, username: String, handler: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread, "Вызов fetchCurrentUserPublicPofile должен производиться из главного потока во избежание гонки")
 
-        if inTheFetchCurrentUserPublicPofileRequest {
-            return
+        if sessionTask != nil {
+            sessionTask?.cancel()
         }
 
         guard let request = constructUsersProfileRequest(withAccessToken: token, ofUser: username) else {
@@ -50,20 +50,19 @@ final class ProfileImageService {
             return
         }
 
-        let dataTask = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UnsplashUserPublicProfile, any Error>) in
+        sessionTask = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UnsplashUserPublicProfile, any Error>) in
             switch result {
             case .success(let userProfileData):
                 self?.avatarURL = userProfileData.profileImage.small
                 handler(.success(self?.avatarURL ?? ""))
-                self?.inTheFetchCurrentUserPublicPofileRequest = false
+                self?.sessionTask = nil
             case .failure(let error):
                 handler(.failure(ProfileImageServiceError.urlRequestError(error)))
                 return
             }
         }
         NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": avatarURL as Any])
-        inTheFetchCurrentUserPublicPofileRequest = true
-        dataTask.resume()
+        sessionTask?.resume()
     }
 
     // MARK: - Private Methods

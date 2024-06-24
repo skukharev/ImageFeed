@@ -42,7 +42,8 @@ final class OAuth2Service {
             return
         }
 
-        guard let request = constructOAuthRequest(code: code) else {  handler(.failure(AuthServiceError.invalidRequest))
+        guard let request = constructOAuthRequest(code: code) else {
+            handler(.failure(AuthServiceError.invalidRequest))
             return
         }
 

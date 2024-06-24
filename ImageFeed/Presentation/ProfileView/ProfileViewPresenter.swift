@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 final class ProfileViewPresenter {
     // MARK: - Private Properties
@@ -22,10 +23,17 @@ final class ProfileViewPresenter {
         profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
             self?.updateAvatar()
         }
+
+        let cache = ImageCache.default
+        cache.memoryStorage.config.countLimit = 150
+        cache.diskStorage.config.sizeLimit = 1000 * 1024 * 1024
+        cache.memoryStorage.config.expiration = .days(1)
+        cache.diskStorage.config.expiration = .days(7)
     }
 
     // MARK: - Public Methods
 
+    /// Реализует бизнес-логику по загрузке данных профиля пользователя из личного кабинета Unsplash
     func loadProfileData() {
         //  TODO: Удалить загрузку данных из profileService.currentUserProfile после изучения анимации в 12 спринте
         if let currentUserProfile = ProfileService.shared.currentUserProfile {
@@ -41,7 +49,8 @@ final class ProfileViewPresenter {
             case .success(let currentUserProfile):
                 self?.viewController?.showUserData(userProfile: currentUserProfile)
 
-                ProfileImageService.shared.fetchProfileImageURL(withAccessToken: accessToken, username: currentUserProfile.username) { _ in
+                ProfileImageService.shared.fetchProfileImageURL(withAccessToken: accessToken, username: currentUserProfile.username) { [weak self] _ in
+                    self?.updateAvatar()
                 }
             case .failure(let error):
                 print(#fileID, #function, #line, "Процесс получения данных профиля завершился с ошибкой \(error)")
@@ -51,12 +60,12 @@ final class ProfileViewPresenter {
     }
 
     // MARK: - Private Methods
+    /// Инициирует загрузку и отображение фото профиля пользователя Unsplash
     private func updateAvatar() {
         guard
             let avatarURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: avatarURL)
         else { return }
-        print("Загрузка и отображение аватара с адресом \(url)")
 
         viewController?.updateAvatar(withURL: url)
     }

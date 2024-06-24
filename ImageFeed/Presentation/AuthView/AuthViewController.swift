@@ -40,6 +40,7 @@ final class AuthViewController: UIViewController {
 
     // MARK: - Private Methods
 
+    /// Заменяет изображение и текст левой кнопки Navigation Controller по умолчанию
     private func configureNavigationControllerBackButton() {
         navigationController?.navigationBar.backIndicatorImage = UIImage(named: "backButton")
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "backButton")
@@ -73,8 +74,8 @@ extension AuthViewController: WebViewControllerDelegate {
                     self?.oauth2TokenStorage.token = token
                     self?.delegate?.didAuthenticate(self)
                 case .failure(let error):
+                    print(#fileID, #function, #line, "Процесс авторизации завершился с ошибкой \(error)")
                     if error as? AuthServiceError != .inTheExecution {
-                        print(#fileID, #function, #line, "Процесс авторизации завершился с ошибкой \(error)")
                         self?.delegate?.didAuthenticateWithError(self)
                     }
                 }

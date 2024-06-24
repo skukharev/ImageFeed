@@ -36,6 +36,10 @@ final class NetworkClient: NetworkClientProtocol {
 
     // MARK: - Public Methods
 
+    /// Скачивает данные из сети по предварительно подготовленному запросу. Во избежание состояния гонки отменяет предыдущий запрос при условии его активности на момент вызова следующего
+    /// - Parameters:
+    ///   - request: экземпляр URLRequest с предварительно подготовленным запросом на скачивание данных
+    ///   - handler: обработчик-замыкание, вызываемое по завершению либо при ошибке скачивания данных
     func fetch(request: URLRequest, handler: @escaping (Result<Data, Error>) -> Void) {
         if urlSessionDataTask != nil {
             urlSessionDataTask?.cancel()
@@ -66,6 +70,10 @@ final class NetworkClient: NetworkClientProtocol {
         urlSessionDataTask?.resume()
     }
 
+    /// Скачивает структурированные данные из сети по предварительно подготовленному запросу. Во избежание состояния гонки отменяет предыдущий запрос при условии его активности на момент вызова следующего
+    /// - Parameters:
+    ///   - request: экземпляр URLRequest с предварительно подготовленным запросом на скачивание данных
+    ///   - handler: обработчик-замыкание, вызываемое по завершению либо при ошибке скачивания данных
     func objectFetch<T: Decodable>(request: URLRequest, handler: @escaping (Result<T, Error>) -> Void) {
         fetch(request: request) { (result: Result<Data, Error>) in
             switch result {

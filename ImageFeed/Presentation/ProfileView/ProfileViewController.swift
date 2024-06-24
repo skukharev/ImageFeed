@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     // MARK: - Private Properties
@@ -114,29 +115,41 @@ final class ProfileViewController: UIViewController {
 
 extension ProfileViewController: ProfileViewPresenterDelegate {
     func showLoadingProfileError(withError: Error) {
-        DispatchQueue.main.async { [weak self] in
-            UIBlockingProgressHUD.dismiss()
+        UIBlockingProgressHUD.dismiss()
 
-            let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось получить данные профиля пользователя", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self?.present(alert, animated: true)
-        }
+        let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось получить данные профиля пользователя", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true)
     }
 
     func showUserData(userProfile: UnsplashCurrentUserProfile) {
-        DispatchQueue.main.async { [weak self] in
-            UIBlockingProgressHUD.dismiss()
+        UIBlockingProgressHUD.dismiss()
 
-            self?.userNameLabel.text = userProfile.firstName
-            if let lastName = userProfile.lastName {
-                self?.userNameLabel.text?.append(contentsOf: " " + lastName)
-            }
-            self?.userLoginLabel.text = "@" + userProfile.username
-            self?.userCommentsLabel.text = userProfile.bio ?? ""
+        userNameLabel.text = userProfile.firstName
+        if let lastName = userProfile.lastName {
+            userNameLabel.text?.append(contentsOf: " " + lastName)
         }
+        userLoginLabel.text = "@" + userProfile.username
+        userCommentsLabel.text = userProfile.bio ?? ""
     }
 
-    /// Обновляет аватар пользователя
     func updateAvatar(withURL url: URL) {
+        guard let imagePlaceholder = UIImage(named: "ProfilePlaceholder") else {
+            assertionFailure("Ошибка загрузки изображения ProfilePlaceholder из ресурсов проекта")
+            return
+        }
+
+        UIBlockingProgressHUD.show()
+        let processor = RoundCornerImageProcessor(cornerRadius: 20)
+        profilePhoto.kf.indicatorType = .activity
+        profilePhoto.kf.setImage(with: url, placeholder: imagePlaceholder, options: [.processor(processor), .cacheSerializer(FormatIndicatedCacheSerializer.png)]) { result in
+            UIBlockingProgressHUD.dismiss()
+
+            switch result {
+            case .success: break
+            case .failure(let error):
+                print(#fileID, #function, #line, "Ошибка загрузки изображения профиля с url: \(url), текст ошибки: \(error.localizedDescription)")
+            }
+        }
     }
 }

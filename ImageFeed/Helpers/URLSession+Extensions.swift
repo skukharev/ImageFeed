@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Типы ошибок, используемые в расширении URLSession для скачивания данных из сети
 enum URLSessionError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
@@ -30,6 +31,11 @@ extension URLSessionError: LocalizedError {
 }
 
 extension URLSession {
+    /// Скачивает данные из сети
+    /// - Parameters:
+    ///   - request: экземпляр URLRequest, содержащий url запроса
+    ///   - completion: замыкание, вызываемое по завершению либо ошибке скачивания данных. Замыкание вызывается в главном потоке для безпрепятственного обновления UI
+    /// - Returns: Возвращает ссылку на экземпляр URLSessionTask с сформированным заданием на скачивание данных. Для запуска задания необходимо вызвать .resume()
     func data(for request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
         let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
             DispatchQueue.main.async {
@@ -57,6 +63,11 @@ extension URLSession {
         return task
     }
 
+    /// Скачивает структурированные данные из сети
+    /// - Parameters:
+    ///   - request: экземпляр URLRequest, содержащий url запроса
+    ///   - completion: замыкание, вызываемое по завершению либо ошибке скачивания данных. Замыкание вызывается в главном потоке для безпрепятственного обновления UI
+    /// - Returns: Возвращает ссылку на экземпляр URLSessionTask с сформированным заданием на скачивание данных. Для запуска задания необходимо вызвать .resume()
     func objectTask<T: Decodable>(for request: URLRequest, completion: @escaping (Result<T, Error>) -> Void) -> URLSessionTask {
         let task = data(for: request) { (result: Result<Data, Error>) in
             switch result {

@@ -7,15 +7,14 @@
 
 import Foundation
 
+enum ProfileServiceError: Error {
+    case invalidRequest
+    case urlRequestError(Error)
+    case convertDataError
+    case dataLoadingIsWorking
+}
+
 final class ProfileService {
-    // MARK: - Types
-
-    enum ProfileServiceError: Error {
-        case invalidRequest
-        case urlRequestError(Error)
-        case convertDataError
-    }
-
     // MARK: - Public Properties
 
     static let shared = ProfileService()
@@ -24,7 +23,7 @@ final class ProfileService {
 
     // MARK: - Private Properties
 
-    private var inTheFetchCurrentUserProfileRequest = false
+    private var sessionTask: URLSessionTask?
     private var username: String?
 
     // MARK: - Public Methods
@@ -34,8 +33,8 @@ final class ProfileService {
     func fetchCurrentUserProfile(withAccessToken token: String, handler: @escaping (Result<UnsplashCurrentUserProfile, Error>) -> Void) {
         assert(Thread.isMainThread, "Вызов fetchCurrentUserProfile должен производиться из главного потока во избежание гонки")
 
-        if inTheFetchCurrentUserProfileRequest {
-            return
+        if sessionTask != nil {
+            sessionTask?.cancel()
         }
 
         guard let request = constructMeRequest(withAccessToken: token) else {
@@ -43,20 +42,19 @@ final class ProfileService {
             return
         }
 
-        let dataTask = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UnsplashCurrentUserProfile, any Error>) in
+        sessionTask = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UnsplashCurrentUserProfile, Error>) in
             switch result {
             case .success(let userProfileData):
                 self?.username = userProfileData.username
                 self?.currentUserProfile = userProfileData
                 handler(.success(userProfileData))
-                self?.inTheFetchCurrentUserProfileRequest = false
+                self?.sessionTask = nil
             case .failure(let error):
                 handler(.failure(ProfileServiceError.urlRequestError(error)))
                 return
             }
         }
-        inTheFetchCurrentUserProfileRequest = true
-        dataTask.resume()
+        sessionTask?.resume()
     }
 
     // MARK: - Private Methods
