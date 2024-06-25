@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftKeychainWrapper
 
 /// Используется для хранения в UserDefaults Bearer-токена авторизации Unsplash
 final class OAuth2TokenStorage {
@@ -27,10 +28,23 @@ final class OAuth2TokenStorage {
     /// Bearer-токен авторизации в Unsplash
     var token: String? {
         get {
-            return UserDefaults.standard.string(forKey: accessTokenKeyIdentifier)
+            return KeychainWrapper.standard.string(forKey: accessTokenKeyIdentifier)
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: accessTokenKeyIdentifier)
+            if let newValue = newValue {
+                let isSuccess = KeychainWrapper.standard.set(newValue, forKey: accessTokenKeyIdentifier)
+                guard isSuccess else {
+                    assertionFailure("Ошибка записи токена в KeyChain")
+                    return
+                }
+            } else {
+                let isSuccess = KeychainWrapper.standard.removeObject(forKey: accessTokenKeyIdentifier)
+
+                if !isSuccess {
+                    assertionFailure("Ошибка удаления токена из KeyChain")
+                    return
+                }
+            }
         }
     }
 }

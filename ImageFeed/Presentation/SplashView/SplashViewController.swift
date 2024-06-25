@@ -7,47 +7,65 @@
 
 import UIKit
 
-final class SplashViewController: UIViewController, AuthViewControllerDelegate {
+final class SplashViewController: UIViewController {
     // MARK: - Private Properties
 
+    /// Сиснглетон для управления токеном авторизации в KeyChain
     private let oauth2TokenStorage = OAuth2TokenStorage.shared
-    private let showAuthFlowSegueIdentifier = "ShowAuthFlow"
+
+    /// Элемент управления: картинка запуска приложения
+    private lazy var launchScreen: UIImageView = {
+        let launchScreen = UIImageView()
+        launchScreen.translatesAutoresizingMaskIntoConstraints = false
+        guard let image = UIImage(named: "LaunchScreen") else {
+            assertionFailure("Ошибка загрузки изображения LaunchScreen")
+            return launchScreen
+        }
+        launchScreen.image = image
+        launchScreen.contentMode = .center
+        return launchScreen
+    }()
 
     // MARK: - UIViewController
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        createAndLayoutViews()
+
         if oauth2TokenStorage.token != nil {
             switchToTabBarController()
         } else {
-            performSegue(withIdentifier: showAuthFlowSegueIdentifier, sender: nil)
+            switchToAuthenticateViewController()
         }
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showAuthFlowSegueIdentifier {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController else {
-                assertionFailure("Ошибка обработки сегвея с ID=\(showAuthFlowSegueIdentifier)")
-                return
-            }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-
-    // MARK: - Public Methods
-
-    func didAuthenticate(_ viewController: AuthViewController) {
-        viewController.dismiss(animated: true)
-        switchToTabBarController()
     }
 
     // MARK: - Private Methods
 
+    /// Создаёт элементы управления
+    private func addSubviews() {
+        view.addSubview(launchScreen)
+    }
+
+    /// Создаёт и размещает элементы управления во вью контроллере
+    private func createAndLayoutViews() {
+        view.backgroundColor = .ypBlack
+        addSubviews()
+        setupConstraints()
+    }
+
+    /// Создаёт констрейнты для элементов управления
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            // Фото экрана запуска
+            launchScreen.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            launchScreen.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+            launchScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            launchScreen.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0)
+        ])
+    }
+
+    /// Переключает rootViewController на список изображений Unsplash
     private func switchToTabBarController() {
         // Получаем экземпляр `window` приложения
         guard let window = UIApplication.shared.windows.first else {
@@ -61,5 +79,47 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
 
         // Установим в `rootViewController` полученный контроллер
         window.rootViewController = tabBarController
+
+        UIBlockingProgressHUD.show()
+        let profileViewPresenter = ProfileViewPresenter(viewController: nil)
+        profileViewPresenter.loadProfileData()
+        UIBlockingProgressHUD.dismiss()
+    }
+
+    /// Переключает UI на страницу авторизации в приложении
+    private func switchToAuthenticateViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        guard let navigationViewController = storyboard.instantiateViewController(identifier: "NavigationController") as? UINavigationController else {
+            assertionFailure("Ошибка инициализации NavigationController")
+            return
+        }
+        guard let authViewController = navigationViewController.viewControllers[0] as? AuthViewController else {
+            assertionFailure("Ошибка инициализации AuthViewController")
+            return
+        }
+        authViewController.delegate = self
+        navigationViewController.modalPresentationStyle = .fullScreen
+        present(navigationViewController, animated: true)
+    }
+}
+
+// MARK: - AuthViewControllerDelegate
+
+extension SplashViewController: AuthViewControllerDelegate {
+    /// Вызывается делегатом при ошибке авторизации в Unsplash
+    /// - Parameter viewController: экземпляр AuthViewController, сгенерировавший событие
+    func didAuthenticate(_ viewController: AuthViewController?) {
+        viewController?.dismiss(animated: true)
+        switchToTabBarController()
+    }
+
+    /// Вызывается делегатом при успешной авторизации в Unsplash
+    /// - Parameter viewController: экземпляр AuthViewController, сгенерировавший событие
+    func didAuthenticateWithError(_ viewController: AuthViewController?) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            viewController?.present(alert, animated: true)
+        }
     }
 }

@@ -7,7 +7,8 @@
 
 import Foundation
 
-class SnakeCaseJSONDecoder: JSONDecoder {
+/// Вспомогательный класс для автоматического приведения обрабатываемых JSON из SnakeCase к виду camelCase
+final class SnakeCaseJSONDecoder: JSONDecoder {
     override init() {
         super.init()
         keyDecodingStrategy = .convertFromSnakeCase

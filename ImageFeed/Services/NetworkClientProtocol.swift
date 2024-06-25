@@ -9,4 +9,5 @@ import Foundation
 
 protocol NetworkClientProtocol {
     func fetch(request: URLRequest, handler: @escaping (Result<Data, Error>) -> Void)
+    func objectFetch<T: Decodable>(request: URLRequest, handler: @escaping (Result<T, Error>) -> Void)
 }

@@ -40,6 +40,7 @@ final class AuthViewController: UIViewController {
 
     // MARK: - Private Methods
 
+    /// Заменяет изображение и текст левой кнопки Navigation Controller по умолчанию
     private func configureNavigationControllerBackButton() {
         navigationController?.navigationBar.backIndicatorImage = UIImage(named: "backButton")
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "backButton")
@@ -61,19 +62,21 @@ extension AuthViewController: WebViewControllerDelegate {
     }
 
     func webViewController(_ viewController: WebViewController, didAuthenticateWithCode code: String) {
-        let utilityQueue = DispatchQueue(label: "oauth2ServiceQueue", qos: .utility)
-        utilityQueue.async {[weak self] in
-            guard let self = self else {
-                return
-            }
-            self.oauth2Service.fetchOAuthToken(code: code) {result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let token):
-                        self.oauth2TokenStorage.token = token
-                        self.delegate?.didAuthenticate(self)
-                    case .failure(let error):
-                        print(#fileID, #function, #line, "Процесс авторизации завершился с ошибкой \(error)")
+        navigationController?.popViewController(animated: true)
+        UIBlockingProgressHUD.show()
+
+        oauth2Service.fetchOAuthToken(code: code) {[weak self] result in
+            DispatchQueue.main.async {
+                UIBlockingProgressHUD.dismiss()
+
+                switch result {
+                case .success(let token):
+                    self?.oauth2TokenStorage.token = token
+                    self?.delegate?.didAuthenticate(self)
+                case .failure(let error):
+                    print(#fileID, #function, #line, "Процесс авторизации завершился с ошибкой \(error)")
+                    if error as? AuthServiceError != .inTheExecution {
+                        self?.delegate?.didAuthenticateWithError(self)
                     }
                 }
             }
