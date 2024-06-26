@@ -17,41 +17,82 @@ final class AuthViewController: UIViewController {
     private let oauth2Service = OAuth2Service.shared
     private let oauth2TokenStorage = OAuth2TokenStorage.shared
     private let showWebViewSegueIdentifer = "ShowWebView"
+    private lazy var authorizationScreen: UIImageView = {
+        let authScreen = UIImageView()
+        authScreen.translatesAutoresizingMaskIntoConstraints = false
+        authScreen.image = UIImage(named: "AuthorizationScreen")
+        if authScreen.image == nil {
+            assertionFailure("Ошибка загрузки изображения с идентификатором AuthorizationScreen")
+            authScreen.image = UIImage()
+        }
+        authScreen.contentMode = .scaleAspectFit
+        return authScreen
+    }()
+    private lazy var loginButton: UIButton = {
+        let loginButton = UIButton(type: .system)
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
+        loginButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        loginButton.setTitle("Войти", for: .normal)
+        loginButton.contentHorizontalAlignment = .center
+        loginButton.tintColor = .ypBlack
+        loginButton.backgroundColor = .ypWhite
+        loginButton.layer.cornerRadius = 16
+        loginButton.addTarget(self, action: #selector(loginButtonTouchUpInside), for: .touchUpInside)
+        return loginButton
+    }()
 
     // MARK: - UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        createAndLayoutViews()
         configureNavigationControllerBackButton()
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showWebViewSegueIdentifer {
-            guard let webViewController = segue.destination as? WebViewController else {
-                assertionFailure("Экземпляр WebViewController не существует")
-                return
-            }
-            webViewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-
     // MARK: - Private Methods
+
+    /// Создаёт элементы управления
+    private func addSubViews() {
+        view.addSubview(authorizationScreen)
+        view.addSubview(loginButton)
+    }
 
     /// Заменяет изображение и текст левой кнопки Navigation Controller по умолчанию
     private func configureNavigationControllerBackButton() {
         navigationController?.navigationBar.backIndicatorImage = UIImage(named: "backButton")
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "backButton")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        if #available(iOS 13.0, *) {
-            if UITraitCollection.current.userInterfaceStyle == .dark {
-                navigationItem.backBarButtonItem?.tintColor = .ypWhite
-            } else {
-                navigationItem.backBarButtonItem?.tintColor = .ypBlack
-            }
-        }
+        navigationItem.backBarButtonItem?.tintColor = .ypBlack
+    }
+
+    /// Создаёт и размещает элементы управления во вью контроллере
+    private func createAndLayoutViews() {
+        self.view.backgroundColor = .ypBlack
+        addSubViews()
+        setupConstraints()
+    }
+
+    @objc private func loginButtonTouchUpInside() {
+        let viewController = WebViewController()
+        viewController.delegate = self
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    /// Устанавливает констрейнты для элементов управления
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            // Логотип Unsplash
+            authorizationScreen.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: 0),
+            authorizationScreen.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: 0),
+            authorizationScreen.widthAnchor.constraint(equalToConstant: 60),
+            authorizationScreen.heightAnchor.constraint(equalToConstant: 60),
+            // Кнопка "Войти"
+            loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -124),
+            loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            loginButton.heightAnchor.constraint(equalToConstant: 48)
+        ])
     }
 }
 

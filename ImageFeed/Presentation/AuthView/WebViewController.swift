@@ -13,20 +13,29 @@ final class WebViewController: UIViewController {
 
     weak var delegate: WebViewControllerDelegate?
 
-    // MARK: - IBOutlet
-
-    @IBOutlet weak private var webView: WKWebView!
-    @IBOutlet weak private var progressView: UIProgressView!
-
     // MARK: - Private Properties
 
     private var observation: NSKeyValueObservation?
+
+    private lazy var progressView: UIProgressView = {
+        let progressView = UIProgressView(progressViewStyle: .bar)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.tintColor = .ypBlack
+        return progressView
+    }()
+    private lazy var webView: WKWebView = {
+        let webView = WKWebView()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.backgroundColor = .ypWhite
+        return webView
+    }()
 
     // MARK: - UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        createAndLayoutViews()
         webView.navigationDelegate = self
         loadAuthView()
 
@@ -36,6 +45,34 @@ final class WebViewController: UIViewController {
     }
 
     // MARK: - Private Methods
+
+    /// Создаёт элементы управления
+    private func addSubViews() {
+        view.addSubview(webView)
+        view.addSubview(progressView)
+    }
+
+    /// Устанавливает цвет фона заголовка верхней панели навигации в соответствии с дизайн-макетом проекта
+    private func configureNavigationController() {
+        let barItemBackgroundColor = UIColor.ypWhite
+        if #available(iOS 15.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = barItemBackgroundColor
+            navigationItem.standardAppearance = appearance
+            navigationItem.scrollEdgeAppearance = appearance
+            navigationItem.compactAppearance = appearance
+        } else {
+            navigationController?.navigationBar.barTintColor = barItemBackgroundColor
+        }
+    }
+
+    /// Создаёт и размещает элементы управления во вью контроллере
+    private func createAndLayoutViews() {
+        addSubViews()
+        setupConstraints()
+        configureNavigationController()
+    }
 
     /// Загружает окно авторизации Unsplash во встроенном браузере
     private func loadAuthView() {
@@ -73,6 +110,21 @@ final class WebViewController: UIViewController {
         } else {
             return nil
         }
+    }
+
+    /// Устанавливает констрейнты для элементов управления
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            // Индикатор загрузки
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0),
+            // Веб-браузер
+            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
+            webView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            webView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
+        ])
     }
 
     /// Используется для обновления состояния элемента, отображающего прогресс загрузки страницы аутентификации
