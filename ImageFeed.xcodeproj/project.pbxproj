@@ -38,7 +38,6 @@
 		07B6187D2C25AD1E00F5566E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 07B6187C2C25AD1E00F5566E /* Kingfisher */; };
 		07B618802C25D7B100F5566E /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 07B6187F2C25D7B100F5566E /* SwiftKeychainWrapper */; };
 		07B633F92C2852A5009C1B25 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B633F82C2852A5009C1B25 /* TabBarController.swift */; };
-		07BFA6782C2870A000AC439E /* NavigationBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BFA6772C2870A000AC439E /* NavigationBarController.swift */; };
 		07CA2C5C2BF4E8F20057C81D /* ImagesListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CA2C5B2BF4E8F20057C81D /* ImagesListViewPresenter.swift */; };
 		07CA2C5E2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CA2C5D2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift */; };
 		07CA2C602BF4F6340057C81D /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CA2C5F2BF4F6340057C81D /* ImagesListCell.swift */; };
@@ -79,7 +78,6 @@
 		076A2FF52C1814B100E2DA02 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		076A2FF72C181D3200E2DA02 /* AuthViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewControllerDelegate.swift; sourceTree = "<group>"; };
 		07B633F82C2852A5009C1B25 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		07BFA6772C2870A000AC439E /* NavigationBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarController.swift; sourceTree = "<group>"; };
 		07CA2C5B2BF4E8F20057C81D /* ImagesListViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListViewPresenter.swift; sourceTree = "<group>"; };
 		07CA2C5D2BF4EBB50057C81D /* ImagesListViewPresenterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListViewPresenterDelegate.swift; sourceTree = "<group>"; };
 		07CA2C5F2BF4F6340057C81D /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
@@ -180,7 +178,6 @@
 			isa = PBXGroup;
 			children = (
 				076A2FF42C1814A200E2DA02 /* SplashView */,
-				07BFA6762C28708400AC439E /* NavigationBarController */,
 				07B633FA2C2852CB009C1B25 /* TabBarController */,
 				076922AF2C16014C005D6FFF /* AuthView */,
 				07D88F292BFA497700B3ACAB /* ImagesListView */,
@@ -221,14 +218,6 @@
 				07B633F82C2852A5009C1B25 /* TabBarController.swift */,
 			);
 			path = TabBarController;
-			sourceTree = "<group>";
-		};
-		07BFA6762C28708400AC439E /* NavigationBarController */ = {
-			isa = PBXGroup;
-			children = (
-				07BFA6772C2870A000AC439E /* NavigationBarController.swift */,
-			);
-			path = NavigationBarController;
 			sourceTree = "<group>";
 		};
 		07D88F262BFA492900B3ACAB /* ImagesListCell */ = {
@@ -376,7 +365,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				070AE6FE2BE740D500D87AC8 /* ImagesListViewController.swift in Sources */,
-				07BFA6782C2870A000AC439E /* NavigationBarController.swift in Sources */,
 				076A2FF32C1811BD00E2DA02 /* OAuth2TokenStorage.swift in Sources */,
 				0718AD102C15B5BA00D9F076 /* Constants.swift in Sources */,
 				07CA2C5C2BF4E8F20057C81D /* ImagesListViewPresenter.swift in Sources */,

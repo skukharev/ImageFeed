@@ -88,15 +88,9 @@ final class SplashViewController: UIViewController {
 
     /// Переключает UI на страницу авторизации в приложении
     private func switchToAuthenticateViewController() {
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        guard let navigationViewController = storyboard.instantiateViewController(identifier: "NavigationController") as? UINavigationController else {
-            assertionFailure("Ошибка инициализации NavigationController")
-            return
-        }
-        guard let authViewController = navigationViewController.viewControllers[0] as? AuthViewController else {
-            assertionFailure("Ошибка инициализации AuthViewController")
-            return
-        }
+        let navigationViewController = UINavigationController()
+        let authViewController = AuthViewController()
+        navigationViewController.viewControllers = [authViewController]
         authViewController.delegate = self
         navigationViewController.modalPresentationStyle = .fullScreen
         present(navigationViewController, animated: true)

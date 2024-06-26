@@ -142,21 +142,6 @@
             </objects>
             <point key="canvasLocation" x="-283" y="190"/>
         </scene>
-        <!--Navigation Bar Controller-->
-        <scene sceneID="VSa-qT-eHI">
-            <objects>
-                <navigationController storyboardIdentifier="NavigationController" automaticallyAdjustsScrollViewInsets="NO" id="3QN-Tb-Sq9" customClass="NavigationBarController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ULQ-AR-EhV">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="la4-i8-VPa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2141" y="-457"/>
-        </scene>
     </scenes>
     <resources>
         <image name="0" width="1600" height="1059"/>
