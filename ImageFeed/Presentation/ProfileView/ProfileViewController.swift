@@ -66,15 +66,18 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
 
         presenter = ProfileViewPresenter(viewController: self)
-
-        addSubviews()
-        setupConstraints()
-
-        UIBlockingProgressHUD.show()
+        createAndLayoutViews()
         presenter?.loadProfileData()
     }
 
     // MARK: - Private Methods
+
+    /// Создаёт и размещает элементы управления во вью контроллере
+    private func createAndLayoutViews() {
+        view.backgroundColor = .ypBlack
+        addSubviews()
+        setupConstraints()
+    }
 
     /// Создаёт элементы управления в контроллере профиля пользователя
     private func addSubviews() {

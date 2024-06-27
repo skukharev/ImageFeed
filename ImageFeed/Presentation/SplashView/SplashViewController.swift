@@ -67,17 +67,29 @@ final class SplashViewController: UIViewController {
 
     /// Переключает rootViewController на список изображений Unsplash
     private func switchToTabBarController() {
+        // Создание вью контроллера для ленты изображений
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let imagesListViewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController")
+        // Создание вью контроллера для профиля пользователя
+        let profileViewController = ProfileViewController()
+        profileViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_profile_active"), selectedImage: nil)
+        // Создание вью контроллера для таб-бара
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [imagesListViewController, profileViewController]
+        // Настройка цвета фона таб-бара
+        let appearance = UITabBarAppearance()
+        appearance.backgroundColor = .ypBlack
+        appearance.shadowColor = nil
+        tabBarController.tabBar.standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            tabBarController.tabBar.scrollEdgeAppearance = appearance
+        }
+
         // Получаем экземпляр `window` приложения
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
             return
         }
-
-        // Создаём экземпляр нужного контроллера из Storyboard с помощью ранее заданного идентификатора
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
-
-        // Установим в `rootViewController` полученный контроллер
         window.rootViewController = tabBarController
 
         UIBlockingProgressHUD.show()
@@ -100,14 +112,14 @@ final class SplashViewController: UIViewController {
 // MARK: - AuthViewControllerDelegate
 
 extension SplashViewController: AuthViewControllerDelegate {
-    /// Вызывается делегатом при ошибке авторизации в Unsplash
+    /// Вызывается делегатом при успешной авторизации в Unsplash
     /// - Parameter viewController: экземпляр AuthViewController, сгенерировавший событие
     func didAuthenticate(_ viewController: AuthViewController?) {
         viewController?.dismiss(animated: true)
         switchToTabBarController()
     }
 
-    /// Вызывается делегатом при успешной авторизации в Unsplash
+    /// Вызывается делегатом при ошибке авторизации в Unsplash
     /// - Parameter viewController: экземпляр AuthViewController, сгенерировавший событие
     func didAuthenticateWithError(_ viewController: AuthViewController?) {
         DispatchQueue.main.async {

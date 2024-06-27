@@ -35,6 +35,7 @@ final class ProfileViewPresenter {
 
     /// Реализует бизнес-логику по загрузке данных профиля пользователя из личного кабинета Unsplash
     func loadProfileData() {
+        UIBlockingProgressHUD.show()
         //  TODO: Удалить загрузку данных из profileService.currentUserProfile после изучения анимации в 12 спринте
         if let currentUserProfile = ProfileService.shared.currentUserProfile {
             viewController?.showUserData(userProfile: currentUserProfile)
