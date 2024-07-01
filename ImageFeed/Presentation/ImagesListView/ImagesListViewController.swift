@@ -8,20 +8,32 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController, ImagesListViewPresenterDelegate {
-    // MARK: - IBOutlet
-
-    @IBOutlet private weak var tableView: UITableView!
-
     // MARK: - Private Properties
 
     private var presenter: ImagesListViewPresenter?
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
+
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.separatorEffect = .none
+        tableView.separatorInset = .zero
+        tableView.allowsSelection = true
+        tableView.alwaysBounceVertical = true
+        tableView.insetsContentViewsToSafeArea = true
+        tableView.contentInsetAdjustmentBehavior = .automatic
+        tableView.backgroundColor = .ypBlack
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
 
     // MARK: - UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        createAndLayoutViews()
         presenter = ImagesListViewPresenter(viewController: self)
 
         tableView.register(UINib(nibName: ImagesListCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
@@ -29,22 +41,30 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showSingleImageSegueIdentifier {
-            guard
-                let viewController = segue.destination as? SingleImageViewController,
-                let indexPath = sender as? IndexPath,
-                let presenter = presenter
-            else {
-                print(#fileID, #function, #line, "Неверный приёмник сегвея ShowSingleImage")
-                return
-            }
+    // MARK: - Private Methods
 
-            let image = UIImage(named: presenter.photosName[indexPath.row])
-            viewController.image = image
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
+    private func addSubviews() {
+        view.addSubview(tableView)
+    }
+
+    private func createAndLayoutViews() {
+        view.contentMode = .scaleToFill
+        view.backgroundColor = .ypBlack
+        view.isOpaque = true
+        view.clearsContextBeforeDrawing = true
+        view.clipsToBounds = false
+        view.autoresizesSubviews = true
+        addSubviews()
+        setupConstraints()
+    }
+
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
 }
 
@@ -78,7 +98,7 @@ extension ImagesListViewController: UITableViewDataSource {
         return imageListCell
     }
 
-    /// Используется для конфигурирования и отображения заданной ы ячейки таблицы
+    /// Используется для конфигурирования и отображения заданной ячейки таблицы
     /// - Parameters:
     ///   - cell: Отображаемая ячейка
     ///   - indexPath: Путь индекса строки в секции таблицы
@@ -101,6 +121,17 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let viewController = storyboard.instantiateViewController(withIdentifier: "SingleImageViewController") as? SingleImageViewController
+        guard
+            let viewController = viewController,
+            let presenter = presenter
+        else {
+            assertionFailure("Ошибка инициализации ImagesListViewPresenter/SingleImageViewController")
+            return
+        }
+        let image = UIImage(named: presenter.photosName[indexPath.row])
+        viewController.image = image
+        present(viewController, animated: true)
     }
 }

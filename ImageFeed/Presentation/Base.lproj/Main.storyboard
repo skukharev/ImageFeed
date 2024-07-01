@@ -9,46 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--ImagesList-->
-        <scene sceneID="tne-QT-ifu">
-            <objects>
-                <viewController storyboardIdentifier="ImagesListViewController" title="ImagesList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Zw7-7A-wsn">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                                <color key="backgroundColor" name="YP Black"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="61a-5L-ul9"/>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="wmN-yt-ZU7"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" name="YP Black"/>
-                        <constraints>
-                            <constraint firstItem="Zw7-7A-wsn" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="993-0m-21A"/>
-                            <constraint firstItem="Zw7-7A-wsn" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="FEg-kh-Eri"/>
-                            <constraint firstAttribute="bottom" secondItem="Zw7-7A-wsn" secondAttribute="bottom" id="Mbx-ht-8F4"/>
-                            <constraint firstAttribute="trailing" secondItem="Zw7-7A-wsn" secondAttribute="trailing" id="aHT-7f-Rzo"/>
-                        </constraints>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="FWL-wC-DM0"/>
-                    <connections>
-                        <outlet property="tableView" destination="Zw7-7A-wsn" id="1yX-Xp-maM"/>
-                        <segue destination="7Vp-FK-iAT" kind="presentation" identifier="ShowSingleImage" id="0IH-VO-5bf"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1216" y="300"/>
-        </scene>
         <!--Single Image View Controller-->
         <scene sceneID="vVA-Yt-oMU">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="7Vp-FK-iAT" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SingleImageViewController" modalPresentationStyle="fullScreen" id="7Vp-FK-iAT" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rKM-Mt-EAe">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -77,7 +41,7 @@
                                 </connections>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SG0-fd-vfO">
-                                <rect key="frame" x="8" y="8" width="44" height="44"/>
+                                <rect key="frame" x="8" y="67" width="44" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="Aik-dX-Tcc"/>
                                     <constraint firstAttribute="width" constant="44" id="JHq-No-CtR"/>
@@ -89,7 +53,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d5R-rz-FaE" userLabel="Share Image Button">
-                                <rect key="frame" x="171" y="785" width="51" height="51"/>
+                                <rect key="frame" x="171" y="751" width="51" height="51"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="51" id="CJE-m6-ATQ"/>
                                     <constraint firstAttribute="width" constant="51" id="pOy-Pq-kNO"/>
@@ -130,7 +94,6 @@
         <image name="0" width="1600" height="1059"/>
         <image name="ShareButton" width="51" height="51"/>
         <image name="backButton" width="24" height="24"/>
-        <image name="tab_editorial_active" width="30" height="30"/>
         <namedColor name="YP Black">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

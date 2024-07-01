@@ -68,8 +68,8 @@ final class SplashViewController: UIViewController {
     /// Переключает rootViewController на список изображений Unsplash
     private func switchToTabBarController() {
         // Создание вью контроллера для ленты изображений
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        let imagesListViewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController")
+        let imagesListViewController = ImagesListViewController()
+        imagesListViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_editorial_active"), selectedImage: nil)
         // Создание вью контроллера для профиля пользователя
         let profileViewController = ProfileViewController()
         profileViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_profile_active"), selectedImage: nil)
