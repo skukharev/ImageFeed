@@ -121,13 +121,9 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        let viewController = storyboard.instantiateViewController(withIdentifier: "SingleImageViewController") as? SingleImageViewController
-        guard
-            let viewController = viewController,
-            let presenter = presenter
-        else {
-            assertionFailure("Ошибка инициализации ImagesListViewPresenter/SingleImageViewController")
+        let viewController = SingleImageViewController()
+        guard let presenter = presenter else {
+            assertionFailure("Ошибка инициализации ImagesListViewPresenter")
             return
         }
         let image = UIImage(named: presenter.photosName[indexPath.row])

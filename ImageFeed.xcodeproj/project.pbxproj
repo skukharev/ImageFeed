@@ -12,7 +12,6 @@
 		070AE6FA2BE740D500D87AC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070AE6F92BE740D500D87AC8 /* AppDelegate.swift */; };
 		070AE6FC2BE740D500D87AC8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070AE6FB2BE740D500D87AC8 /* SceneDelegate.swift */; };
 		070AE6FE2BE740D500D87AC8 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070AE6FD2BE740D500D87AC8 /* ImagesListViewController.swift */; };
-		070AE7012BE740D500D87AC8 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 070AE7002BE740D500D87AC8 /* Base */; };
 		070AE7032BE740D700D87AC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 070AE7022BE740D700D87AC8 /* Assets.xcassets */; };
 		070AE7062BE740D700D87AC8 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 070AE7052BE740D700D87AC8 /* Base */; };
 		0718AD102C15B5BA00D9F076 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0718AD0F2C15B5BA00D9F076 /* Constants.swift */; };
@@ -53,7 +52,6 @@
 		070AE6F92BE740D500D87AC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		070AE6FB2BE740D500D87AC8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		070AE6FD2BE740D500D87AC8 /* ImagesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListViewController.swift; sourceTree = "<group>"; };
-		070AE7002BE740D500D87AC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		070AE7022BE740D700D87AC8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		070AE7052BE740D700D87AC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		070AE7072BE740D700D87AC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -82,7 +80,6 @@
 		07CA2C612BF4F7450057C81D /* ImagesListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImagesListCell.xib; sourceTree = "<group>"; };
 		07CA2C632BF5213E0057C81D /* ImagesListCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCellViewModel.swift; sourceTree = "<group>"; };
 		07CA2C652BF526860057C81D /* Array+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
-		07CA2C692BF52FFE0057C81D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		07CA2C6A2BF52FFE0057C81D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		07D88F242BFA3F9600B3ACAB /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -180,7 +177,6 @@
 				07D88F292BFA497700B3ACAB /* ImagesListView */,
 				07D88F282BFA496600B3ACAB /* SingleImageView */,
 				07D88F272BFA495600B3ACAB /* ProfileView */,
-				070AE6FF2BE740D500D87AC8 /* Main.storyboard */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -320,7 +316,6 @@
 				070AE7032BE740D700D87AC8 /* Assets.xcassets in Resources */,
 				07CA2C622BF4F7450057C81D /* ImagesListCell.xib in Resources */,
 				070AE7062BE740D700D87AC8 /* Base in Resources */,
-				070AE7012BE740D500D87AC8 /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,15 +384,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		070AE6FF2BE740D500D87AC8 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				070AE7002BE740D500D87AC8 /* Base */,
-				07CA2C692BF52FFE0057C81D /* ru */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		070AE7042BE740D700D87AC8 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -542,9 +528,10 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = imageFeed/Resources/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Требуется ваше разрешение на запись в медиагалерею";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Требуется ваше разрешение на запись в медиагалерею";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -575,9 +562,10 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = imageFeed/Resources/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Требуется ваше разрешение на запись в медиагалерею";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Требуется ваше разрешение на запись в медиагалерею";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
