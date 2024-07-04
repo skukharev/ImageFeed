@@ -120,7 +120,7 @@ final class SingleImageViewController: UIViewController {
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
-        scrollView.layoutIfNeeded()                      //Без вызова метода scrollView.bounds.size будет 0
+        scrollView.layoutIfNeeded()                      // Без вызова метода scrollView.bounds.size будет 0
         let visibleRectSize = scrollView.bounds.size
         let imageSize = image.size
         let hScale = visibleRectSize.width / imageSize.width

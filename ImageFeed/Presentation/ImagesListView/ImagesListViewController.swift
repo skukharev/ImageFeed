@@ -15,6 +15,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorEffect = .none
@@ -24,7 +25,6 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         tableView.insetsContentViewsToSafeArea = true
         tableView.contentInsetAdjustmentBehavior = .automatic
         tableView.backgroundColor = .ypBlack
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
 
@@ -36,7 +36,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         createAndLayoutViews()
         presenter = ImagesListViewPresenter(viewController: self)
 
-        tableView.register(UINib(nibName: ImagesListCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        tableView.register(ImagesListCell.classForCoder(), forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
         tableView.rowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
@@ -103,7 +103,7 @@ extension ImagesListViewController: UITableViewDataSource {
     ///   - cell: Отображаемая ячейка
     ///   - indexPath: Путь индекса строки в секции таблицы
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        cell.setupLayout()
+        cell.setupCellPresentation()
         guard let presenter = presenter else { return }
         let cellViewModel = presenter.convert(row: indexPath.row)
         cell.showCellViewModel(cellViewModel)
