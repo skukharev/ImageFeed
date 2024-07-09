@@ -108,7 +108,7 @@ final class ImagesListCell: UITableViewCell {
     private func createAndLayoutViews() {
         contentMode = .scaleToFill
         backgroundColor = .ypBlack
-        selectionStyle = .none
+        selectionStyle = .none              // Без этого свойства отображается белая полоска при выделении ячейки
         contentView.contentMode = .center
         contentView.backgroundColor = .ypBlack
         contentView.semanticContentAttribute = .unspecified

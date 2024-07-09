@@ -113,6 +113,11 @@ extension ImagesListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension ImagesListViewController: UITableViewDelegate {
+    /// Используется для переопределения высоты заданной строки списка с фотографиями
+    /// - Parameters:
+    ///   - tableView: Список с фотографиями, наследник UITableView
+    ///   - indexPath: Индекс строки, для которой переопределяется высота
+    /// - Returns: Возвращает высоту заданной строки табличного списка
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = presenter?.getImageByCellIndex(row: indexPath.row) else { return 0 }
 
@@ -120,6 +125,10 @@ extension ImagesListViewController: UITableViewDelegate {
         return image.size.height * imageScale
     }
 
+    /// Обработчик выделения заданной строки - отображает модальный вью контроллер с выделенной фотографией
+    /// - Parameters:
+    ///   - tableView: Список с фотографиями, наследник UITableView
+    ///   - indexPath: Индекс выбранной пользователем строки
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let viewController = SingleImageViewController()
         guard let presenter = presenter else {
@@ -129,5 +138,13 @@ extension ImagesListViewController: UITableViewDelegate {
         let image = UIImage(named: presenter.photosName[indexPath.row])
         viewController.image = image
         present(viewController, animated: true)
+    }
+
+    /// Обработчик, вызываемый перед отображением заданной строки списка в фотографиями
+    /// - Parameters:
+    ///   - tableView: Список с фотографиями, наследник UITableView
+    ///   - cell: Отображаемая ячейка табличного списка
+    ///   - indexPath: Индекс ячейки табличного списка
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     }
 }

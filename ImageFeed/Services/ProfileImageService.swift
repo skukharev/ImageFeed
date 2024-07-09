@@ -29,11 +29,6 @@ final class ProfileImageService {
 
     private var sessionTask: URLSessionTask?
 
-    // MARK: - Initializers
-
-    init() {
-    }
-
     // MARK: - Public Methods
 
     /// Получает публичный профиль текущего пользователя, вызывая метод GET https://api.unsplash.com/users/:username
@@ -55,13 +50,13 @@ final class ProfileImageService {
             case .success(let userProfileData):
                 self?.avatarURL = userProfileData.profileImage.small
                 handler(.success(self?.avatarURL ?? ""))
+                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": self?.avatarURL as Any])
                 self?.sessionTask = nil
             case .failure(let error):
                 handler(.failure(ProfileImageServiceError.urlRequestError(error)))
                 return
             }
         }
-        NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": avatarURL as Any])
         sessionTask?.resume()
     }
 

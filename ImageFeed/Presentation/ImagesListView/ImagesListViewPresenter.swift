@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class ImagesListViewPresenter {
+final class ImagesListViewPresenter: ImagesListViewPresenterDelegate {
     // MARK: - Public Properties
 
     let photosName: [String] = Array(0..<20).map { "\($0)" }
@@ -16,6 +16,7 @@ final class ImagesListViewPresenter {
     // MARK: - Private Properties
 
     weak private var viewController: ImagesListViewPresenterDelegate?
+    private var imageListService: ImagesListServiceDelegate?
 
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -28,6 +29,7 @@ final class ImagesListViewPresenter {
 
     init (viewController: ImagesListViewPresenterDelegate? = nil) {
         self.viewController = viewController
+        self.imageListService = ImagesListService.shared
     }
 
     // MARK: - Public Methods

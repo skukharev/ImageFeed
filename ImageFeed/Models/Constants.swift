@@ -24,4 +24,6 @@ enum Constants {
     static let unsplashMeURLString = defaultBaseURLString + "/me"
     /// URL для полученя публичного профиля заданного пользователя
     static let unsplashUsersProfileURLString = defaultBaseURLString + "/users"
+    /// URL для получения списка фотографий
+    static let unsplashPhotosURLString = defaultBaseURLString + "/photos"
 }
