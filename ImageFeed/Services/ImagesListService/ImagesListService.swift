@@ -9,6 +9,16 @@ import Foundation
 
 /// Загрузчик ленты фотографий из Unsplash
 final class ImagesListService: ImagesListServiceDelegate {
+    // MARK: - Types
+
+    enum ImageListServiceError: Error {
+        case invalidRequest
+        case urlRequestError(Error)
+        case convertDataError
+        case dataLoadingIsWorking
+        case internalError
+    }
+
     // MARK: - Constants
 
     static let shared = ImagesListService()
@@ -47,25 +57,26 @@ final class ImagesListService: ImagesListServiceDelegate {
             let lastLoadedPage = lastLoadedPage,
             let accessToken = accessToken
         else {
-            assertionFailure("Ошибка получения lastLoadedPage/accessToken")
+            assertionFailure("Ошибка доступа к lastLoadedPage/accessToken")
             return
         }
 
         guard let request = constructPhotosRequest(withAccessToken: accessToken, page: lastLoadedPage + 1, perPage: 13) else {
-            assertionFailure("Ошибка в составлении запроса со списком фото ленты Unsplash")
+            assertionFailure("Ошибка формирования запроса получения списка фотографий")
             return
         }
 
         sessionTask = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[UnsplashPhoto], any Error>) in
             switch result {
             case .success(let photosData):
-                let dateFormatter = ISO8601DateFormatter()
                 var imageSize = CGSize()
+                let dateFormatter = ISO8601DateFormatter()
+
                 for element in photosData {
                     imageSize.width = CGFloat(element.width ?? 0)
                     imageSize.height = CGFloat(element.height ?? 0)
-                    let imageDate = dateFormatter.date(from: element.createdAt ?? "") ?? Date()
                     let imageDescription = element.description ?? element.altDescription ?? ""
+                    let imageDate = dateFormatter.date(from: element.createdAt ?? "") ?? Date()
                     let photo = Photo(id: element.id ?? "", size: imageSize, createdAt: imageDate, welcomeDescription: imageDescription, thumbImageURL: element.urls.thumb ?? "", largeImageURL: element.urls.full ?? "", isLiked: element.likedByUser ?? false)
                     self?.photos.append(photo)
                 }

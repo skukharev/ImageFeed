@@ -16,7 +16,7 @@ final class ImagesListViewPresenter: ImagesListViewPresenterDelegate {
     // MARK: - Private Properties
 
     weak private var viewController: ImagesListViewPresenterDelegate?
-    private var imageListService: ImagesListServiceDelegate?
+    private var imagesListService: ImagesListServiceDelegate?
 
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -29,7 +29,7 @@ final class ImagesListViewPresenter: ImagesListViewPresenterDelegate {
 
     init (viewController: ImagesListViewPresenterDelegate? = nil) {
         self.viewController = viewController
-        self.imageListService = ImagesListService.shared
+        self.imagesListService = ImagesListService.shared
     }
 
     // MARK: - Public Methods
