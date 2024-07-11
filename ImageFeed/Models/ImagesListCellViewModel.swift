@@ -9,6 +9,8 @@ import UIKit
 
 /// Структура хранения элементов управления для ячейки таблицы
 struct ImagesListCellViewModel {
+    /// Идентификатор фотографии
+    let photoId: String?
     /// URL фото для ленты
     let thumbImageUrl: URL?
     /// URL фото для полноэкранного просмотра

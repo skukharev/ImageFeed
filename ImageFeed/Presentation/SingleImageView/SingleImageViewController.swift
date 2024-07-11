@@ -64,6 +64,8 @@ final class SingleImageViewController: UIViewController {
         return imageView
     }()
 
+    private var stubImage = UIImage(named: SingleImageViewController.detailedStubImageName)
+
     // MARK: - UIViewController
 
     override func viewDidLoad() {
@@ -77,7 +79,7 @@ final class SingleImageViewController: UIViewController {
 
     /// Обработчик нажатия кнопки "Поделиться изображением"
     /// - Parameter sender: объект, генерирующий событие
-    @objc private func shareImageButtonTouchUpInside() {
+    @objc private func shareImageButtonTouchUpInside(_ sender: UIButton) {
         guard let image = imageView.image else { return }
         let items = [image]
         let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
@@ -95,7 +97,8 @@ final class SingleImageViewController: UIViewController {
     }
 
     /// Закрывает модальное окно с детальным изображением
-    @objc private func backButtonTouchUpInside() {
+    /// - Parameter sender: объект, генерирующий событие
+    @objc private func backButtonTouchUpInside(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
     }
 
@@ -109,6 +112,27 @@ final class SingleImageViewController: UIViewController {
         view.autoresizesSubviews = true
         addSubviews()
         setupConstraints()
+    }
+
+    /// Производит загрузку изображения
+    private func loadImage() {
+        guard let stubImage = stubImage else {
+            assertionFailure("Ошибка загрузки изображения DetailedImageStub из ресурсов проекта")
+            return
+        }
+        UIBlockingProgressHUD.show()
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(with: imageURL, placeholder: stubImage, options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)]) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            switch result {
+            case .success(let image):
+                self?.imageView.frame.size = image.image.size
+                self?.rescaleAndCenterImageInScrollView(image: image.image)
+            case .failure(let error):
+                self?.showError()
+                print(#fileID, #function, #line, "Ошибка загрузки изображения с url: \(String(describing: self?.imageURL)), текст ошибки: \(error.localizedDescription)")
+            }
+        }
     }
 
     /// Подгоняет размер и положение изображения в окне детального просмотра
@@ -173,24 +197,23 @@ final class SingleImageViewController: UIViewController {
 
     /// Отображает изображение на вью контроллере
     private func showImage() {
-        guard let stubImage = UIImage(named: SingleImageViewController.detailedStubImageName) else {
+        guard let stubImage = stubImage else {
             assertionFailure("Ошибка загрузки изображения DetailedImageStub из ресурсов проекта")
             return
         }
         scrollView.contentInset.left = (self.view.bounds.width - stubImage.size.width) / 2
         scrollView.contentInset.top = self.view.bounds.height / 2 - stubImage.size.height
-        scrollView.isUserInteractionEnabled = false
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: imageURL, placeholder: stubImage, options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)]) { [weak self] result in
-            self?.scrollView.isUserInteractionEnabled = true
-            switch result {
-            case .success(let image):
-                self?.imageView.frame.size = image.image.size
-                self?.rescaleAndCenterImageInScrollView(image: image.image)
-            case .failure(let error):
-                print(#fileID, #function, #line, "Ошибка загрузки изображения с url: \(String(describing: self?.imageURL)), текст ошибки: \(error.localizedDescription)")
-            }
-        }
+        loadImage()
+    }
+
+    /// Отображает алерт с ошибкой загрузки детального изображения
+    private func showError() {
+        let alert = UIAlertController(title: "Что-то пошло не так(", message: "Попробовать ещё раз?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+            self?.loadImage()
+        })
+        alert.addAction(UIAlertAction(title: "Не надо", style: .cancel, handler: nil))
+        self.present(alert, animated: true)
     }
 }
 

@@ -118,7 +118,6 @@ extension ImagesListViewController: UITableViewDataSource {
             print(#fileID, #function, #line, "Ошибка приведения типов")
             return UITableViewCell()
         }
-
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }

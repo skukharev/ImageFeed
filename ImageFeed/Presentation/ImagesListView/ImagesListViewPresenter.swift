@@ -55,8 +55,9 @@ final class ImagesListViewPresenter {
         let isLiked = imagesListService?.photos[safe: row]?.isLiked ?? false
         let buttonPictureName = isLiked ? "ActiveLikeButton" : "NoActiveLikeButton"
         let buttonPicture = UIImage(named: buttonPictureName) ?? UIImage()
+        let photoId = imagesListService?.photos[safe: row]?.id
 
-        return ImagesListCellViewModel(thumbImageUrl: thumbImageUrl, fullImageUrl: fullImageUrl, likeButtonImage: buttonPicture, dateLabel: dateFormatter.string(from: imagesListService?.photos[safe: row]?.createdAt ?? Date()), isLiked: isLiked)
+        return ImagesListCellViewModel(photoId: photoId, thumbImageUrl: thumbImageUrl, fullImageUrl: fullImageUrl, likeButtonImage: buttonPicture, dateLabel: dateFormatter.string(from: imagesListService?.photos[safe: row]?.createdAt ?? Date()), isLiked: isLiked)
     }
 
     func getImageDetailedURL(at indexPath: IndexPath) -> URL? {

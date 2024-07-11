@@ -14,6 +14,8 @@ final class ImagesListCell: UITableViewCell {
 
     static let reuseIdentifier = "ImagesListCell"
     static let stubImageName = "ImageStub"
+    static let noActiveLikeButtonName = "NoActiveLikeButton"
+    static let activeLikeButtonName = "ActiveLikeButton"
 
     var image: UIImage? {
         return cellImage.image
@@ -21,14 +23,23 @@ final class ImagesListCell: UITableViewCell {
 
     // MARK: - Private Properties
 
+    private var isLiked = false
+    private var photoId: String?
     private var isGradientAdded = false
+    private var activeLikeButtonImage = UIImage(named: ImagesListCell.activeLikeButtonName) ?? UIImage()
+    private var noActiveLikeButtonImage = UIImage(named: ImagesListCell.noActiveLikeButtonName) ?? UIImage()
 
     private lazy var cellButton: UIButton = {
         let cellButton = UIButton(type: .custom)
-        cellButton.setImage(UIImage(named: "NoActiveLikeButton"), for: .normal)
+        if isLiked {
+            cellButton.setImage(activeLikeButtonImage, for: .normal)
+        } else {
+            cellButton.setImage(noActiveLikeButtonImage, for: .normal)
+        }
         cellButton.contentHorizontalAlignment = .center
         cellButton.contentVerticalAlignment = .center
         cellButton.translatesAutoresizingMaskIntoConstraints = false
+        cellButton.addTarget(self, action: #selector(cellButtonTouchUpInside), for: .touchUpInside)
         return cellButton
     }()
 
@@ -113,6 +124,8 @@ final class ImagesListCell: UITableViewCell {
         }
         cellButton.setImage(model.likeButtonImage, for: .normal)
         cellLabel.text = model.dateLabel
+        isLiked = model.isLiked
+        photoId = model.photoId
     }
 
     // MARK: - Private Methods
@@ -163,6 +176,42 @@ final class ImagesListCell: UITableViewCell {
             cellLabel.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor, constant: 8),
             cellLabel.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor, constant: -8)
         ])
+    }
+
+    /// Обработчик нажатия кнопки "Поставить/снять лайк"
+    /// - Parameter sender: объект, генерирующий событие
+    @objc private func cellButtonTouchUpInside(_ sender: UIButton) {
+        guard let photoId = photoId else { return }
+
+        sender.isEnabled = false
+        if #available(iOS 17.5, *) {
+            let impact = UIImpactFeedbackGenerator(style: .heavy, view: self)
+            impact.impactOccurred()
+        } else {
+            let impact = UIImpactFeedbackGenerator(style: .heavy)
+            impact.impactOccurred()
+        }
+        ImagesListService.shared.changeLike(photoId: photoId, isLike: !isLiked) { [weak self] result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    if let self = self {
+                        self.isLiked.toggle()
+                        if self.isLiked {
+                            self.cellButton.setImage(self.activeLikeButtonImage, for: .normal)
+                        } else {
+                            self.cellButton.setImage(self.noActiveLikeButtonImage, for: .normal)
+                        }
+                    }
+                }
+                print("Лайк/дизлайк успешно установлен")
+            case .failure(let error):
+                print(#fileID, #function, #line, "Ошибка установка/снятия лайка для фотографии, текст ошибки, \(error.localizedDescription)")
+            }
+            DispatchQueue.main.async {
+                sender.isEnabled = true
+            }
+        }
     }
 
     // MARK: - UITableViewCell

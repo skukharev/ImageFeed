@@ -11,12 +11,12 @@ import Foundation
 final class ImagesListService: ImagesListServiceDelegate {
     // MARK: - Types
 
-    enum ImageListServiceError: Error {
+    enum ImagesListServiceError: Error {
         case invalidRequest
         case urlRequestError(Error)
-        case convertDataError
-        case dataLoadingIsWorking
+        case httpStatusCode(Int)
         case internalError
+        case urlSessionError
     }
 
     // MARK: - Constants
@@ -84,10 +84,62 @@ final class ImagesListService: ImagesListServiceDelegate {
                 NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self, userInfo: ["Photos": self?.photos as Any])
                 self?.sessionTask = nil
             case .failure(let error):
+                print(#fileID, #function, #line, "[\(error.localizedDescription)]")
                 return
             }
         }
         sessionTask?.resume()
+    }
+
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, any Error>) -> Void) {
+        assert(Thread.isMainThread, "Вызов changeLike должен производиться из главного потока во избежание гонки")
+
+        guard let accessToken = accessToken else {
+            assertionFailure("Ошибка доступа к accessToken")
+            completion(.failure(ImagesListServiceError.internalError))
+            return
+        }
+
+        var request: URLRequest?
+        if isLike {
+            request = constructLikePhotoRequest(withAccessToken: accessToken, photoId: photoId)
+        } else {
+            request = constructUnlikePhotoRequest(withAccessToken: accessToken, photoId: photoId)
+        }
+
+        guard let request = request else {
+            assertionFailure("Ошибка формирования запроса установки/снятия лайка для фотографии")
+            completion(.failure(ImagesListServiceError.invalidRequest))
+            return
+        }
+
+        let sessionTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            if let error = error {
+                print(#fileID, #function, #line, "[\(ImagesListServiceError.urlRequestError(error).localizedDescription)]")
+                completion(.failure(ImagesListServiceError.urlRequestError(error)))
+                return
+            }
+            if let response = response as? HTTPURLResponse,
+                response.statusCode < 200 || response.statusCode >= 300 {
+                print(#fileID, #function, #line, "[\(ImagesListServiceError.httpStatusCode(response.statusCode).localizedDescription)]")
+                completion(.failure(ImagesListServiceError.httpStatusCode(response.statusCode)))
+                return
+            }
+            guard data != nil else {
+                print(#fileID, #function, #line, "[\(ImagesListServiceError.urlSessionError.localizedDescription)]")
+                completion(.failure(ImagesListServiceError.urlSessionError))
+                return
+            }
+            DispatchQueue.main.async {
+                if let self = self, let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                    let photo = self.photos[index]
+                    let newPhoto = Photo(id: photo.id, size: photo.size, createdAt: photo.createdAt, welcomeDescription: photo.welcomeDescription, thumbImageURL: photo.thumbImageURL, largeImageURL: photo.largeImageURL, isLiked: !photo.isLiked)
+                    self.photos[index] = newPhoto
+                }
+            }
+            completion(.success(()))
+        }
+        sessionTask.resume()
     }
 
     // MARK: - Private Methods
@@ -116,6 +168,38 @@ final class ImagesListService: ImagesListServiceDelegate {
         var request = URLRequest(url: url)
         request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
         request.httpMethod = "GET"
+        return request
+    }
+
+    /// Формирует ссылку для лайка фотографии
+    /// - Parameters:
+    ///   - token: Bearer-токен авторизации в Unsplash
+    ///   - photoId: Идентификатор фотографии
+    /// - Returns: Сформированный URL для установки лайка для заданной фотографии
+    private func constructLikePhotoRequest(withAccessToken token: String, photoId: String) -> URLRequest? {
+        guard let url = URL(string: Constants.unsplashLikePhotoURLString + "/" + photoId + "/like") else {
+            assertionFailure("Ошибка сборки URL из строковой константы")
+            return nil
+        }
+        var request = URLRequest(url: url)
+        request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+        return request
+    }
+
+    /// Формирует ссылку для дизлайка фотографии
+    /// - Parameters:
+    ///   - token: Bearer-токен авторизации в Unsplash
+    ///   - photoId: Идентификатор фотографии
+    /// - Returns: Сформированный URL для снятия лайка для заданной фотографии
+    private func constructUnlikePhotoRequest(withAccessToken token: String, photoId: String) -> URLRequest? {
+        guard let url = URL(string: Constants.unsplashLikePhotoURLString + "/" + photoId + "/like") else {
+            assertionFailure("Ошибка сборки URL из строковой константы")
+            return nil
+        }
+        var request = URLRequest(url: url)
+        request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
+        request.httpMethod = "DELETE"
         return request
     }
 }

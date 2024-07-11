@@ -12,4 +12,10 @@ protocol ImagesListServiceDelegate: AnyObject {
     var photos: [Photo] { get }
     /// Загрузчик очередной порции фотографий в массив photos
     func fetchPhotosNextPage()
+    /// Устанавливает/снимает лайк на заданной фотографии в ленте
+    /// - Parameters:
+    ///   - photoId: Идентификатор фотографии
+    ///   - isLike: Значение лайка
+    ///   - completion: Обработчик, вызываемый после выполнения функции
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void)
 }
