@@ -60,6 +60,11 @@ final class ProfileImageService {
         sessionTask?.resume()
     }
 
+    /// Очищает данные профиля
+    func logout() {
+        avatarURL = nil
+    }
+
     // MARK: - Private Methods
 
     /// Формирует ссылку для получения информации о публичном профиле заданного пользователя "GET https://api.unsplash.com/users/" согласно API Unsplash

@@ -142,6 +142,11 @@ final class ImagesListService: ImagesListServiceDelegate {
         sessionTask.resume()
     }
 
+    /// Очищает данные профиля
+    func logout() {
+        photos.removeAll()
+    }
+
     // MARK: - Private Methods
 
     /// Формирует ссылку для загрузки заданной порции данных о фотографиях из ленты фотографий Unsplash

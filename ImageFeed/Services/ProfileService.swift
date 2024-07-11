@@ -24,7 +24,6 @@ final class ProfileService {
     // MARK: - Private Properties
 
     private var sessionTask: URLSessionTask?
-    private var username: String?
 
     // MARK: - Public Methods
 
@@ -45,7 +44,6 @@ final class ProfileService {
         sessionTask = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UnsplashCurrentUserProfile, Error>) in
             switch result {
             case .success(let userProfileData):
-                self?.username = userProfileData.username
                 self?.currentUserProfile = userProfileData
                 handler(.success(userProfileData))
                 self?.sessionTask = nil
@@ -55,6 +53,11 @@ final class ProfileService {
             }
         }
         sessionTask?.resume()
+    }
+
+    /// Очищает данные профиля
+    func logout() {
+        currentUserProfile = nil
     }
 
     // MARK: - Private Methods
