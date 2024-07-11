@@ -6,21 +6,17 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
+    // MARK: - Constants
+
+    static let detailedStubImageName = "DetailedImageStub"
+
     // MARK: - Public Properties
 
-    /// Детальное изображение
-    var image: UIImage? {
-        didSet {
-            guard
-                isViewLoaded,
-                let image = image
-            else { return }
-            imageView.image = image
-            rescaleAndCenterImageInScrollView(image: image)
-        }
-    }
+    /// URL загружаемого изображения
+    var imageURL: URL?
 
     // MARK: - Private Properties
 
@@ -177,10 +173,24 @@ final class SingleImageViewController: UIViewController {
 
     /// Отображает изображение на вью контроллере
     private func showImage() {
-        imageView.image = image
-        guard let image = image else { return }
-        imageView.frame.size = image.size
-        rescaleAndCenterImageInScrollView(image: image)
+        guard let stubImage = UIImage(named: SingleImageViewController.detailedStubImageName) else {
+            assertionFailure("Ошибка загрузки изображения DetailedImageStub из ресурсов проекта")
+            return
+        }
+        scrollView.contentInset.left = (self.view.bounds.width - stubImage.size.width) / 2
+        scrollView.contentInset.top = self.view.bounds.height / 2 - stubImage.size.height
+        scrollView.isUserInteractionEnabled = false
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(with: imageURL, placeholder: stubImage, options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)]) { [weak self] result in
+            self?.scrollView.isUserInteractionEnabled = true
+            switch result {
+            case .success(let image):
+                self?.imageView.frame.size = image.image.size
+                self?.rescaleAndCenterImageInScrollView(image: image.image)
+            case .failure(let error):
+                print(#fileID, #function, #line, "Ошибка загрузки изображения с url: \(String(describing: self?.imageURL)), текст ошибки: \(error.localizedDescription)")
+            }
+        }
     }
 }
 

@@ -23,12 +23,6 @@ final class ProfileViewPresenter {
         profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
             self?.updateAvatar()
         }
-
-        let cache = ImageCache.default
-        cache.memoryStorage.config.countLimit = 150
-        cache.diskStorage.config.sizeLimit = 1000 * 1024 * 1024
-        cache.memoryStorage.config.expiration = .days(1)
-        cache.diskStorage.config.expiration = .days(7)
     }
 
     // MARK: - Public Methods

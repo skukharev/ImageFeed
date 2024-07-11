@@ -7,11 +7,17 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 final class ImagesListCell: UITableViewCell {
     // MARK: - Public Properties
 
     static let reuseIdentifier = "ImagesListCell"
+    static let stubImageName = "ImageStub"
+
+    var image: UIImage? {
+        return cellImage.image
+    }
 
     // MARK: - Private Properties
 
@@ -90,8 +96,21 @@ final class ImagesListCell: UITableViewCell {
 
     /// Выводит на экран содержимое ячейки
     /// - Parameter model: заполненная вью модель ячейки таблицы
-    func showCellViewModel(_ model: ImagesListCellViewModel) {
-        cellImage.image = model.image
+    func showCellViewModel(_ model: ImagesListCellViewModel, handler: @escaping (Result<RetrieveImageResult, Error>) -> Void) {
+        guard let stubImage = UIImage(named: ImagesListCell.stubImageName) else {
+            assertionFailure("Ошибка загрузки изображения ImageStub из ресурсов проекта")
+            return
+        }
+        cellImage.kf.indicatorType = .activity
+        cellImage.kf.setImage(with: model.thumbImageUrl, placeholder: stubImage, options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)]) { result in
+            switch result {
+            case .success(let image):
+                handler(.success(image))
+            case .failure(let error):
+                print(#fileID, #function, #line, "Ошибка загрузки изображения ленты с url: \(String(describing: model.thumbImageUrl)), текст ошибки: \(error.localizedDescription)")
+                handler(.failure(error))
+            }
+        }
         cellButton.setImage(model.likeButtonImage, for: .normal)
         cellLabel.text = model.dateLabel
     }
@@ -144,5 +163,14 @@ final class ImagesListCell: UITableViewCell {
             cellLabel.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor, constant: 8),
             cellLabel.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor, constant: -8)
         ])
+    }
+
+    // MARK: - UITableViewCell
+
+    /// Отменяет асинхронную загрузку изображения в случае, когда ячейка готовится с сокрытию с экрана
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        cellImage.kf.cancelDownloadTask()
     }
 }

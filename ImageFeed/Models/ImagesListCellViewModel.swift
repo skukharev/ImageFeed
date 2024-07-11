@@ -9,10 +9,14 @@ import UIKit
 
 /// Структура хранения элементов управления для ячейки таблицы
 struct ImagesListCellViewModel {
-    /// Изображение ячейки
-    let image: UIImage
+    /// URL фото для ленты
+    let thumbImageUrl: URL?
+    /// URL фото для полноэкранного просмотра
+    let fullImageUrl: URL?
     /// Изображение кнопки
     let likeButtonImage: UIImage
     /// Дата изображения ячейки
     let dateLabel: String
+    /// Признак лайка фото
+    let isLiked: Bool
 }
