@@ -88,7 +88,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
 
     func updateHeightOfTableViewCell(at indexPath: IndexPath) {
         // Убрал вызов из-за неприятных визуальных эффектов при скроллинге ленты, но оставил код из-за требований задачи
-        //tableView.reloadRows(at: [indexPath], with: .automatic)
+        // tableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }
 
@@ -119,6 +119,7 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         configCell(for: imageListCell, with: indexPath)
+        imageListCell.delegate = self
         return imageListCell
     }
 
@@ -170,5 +171,23 @@ extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.section != 0 || indexPath.row != tableView.numberOfRows(inSection: 0) - 2 { return }
         presenter?.fetchPhotosNextPage()
+    }
+}
+
+// MARK: - ImagesListCellDelegate
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell, _ completion: @escaping () -> Void) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            completion()
+            return
+        }
+        presenter?.changeLike(for: indexPath.row) { result in
+            switch result {
+            case .success(let isLiked):
+                cell.setIsLiked(photoIsLiked: isLiked)
+            default: break
+            }
+            completion()
+        }
     }
 }

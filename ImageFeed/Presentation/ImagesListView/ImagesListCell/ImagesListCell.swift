@@ -21,25 +21,23 @@ final class ImagesListCell: UITableViewCell {
         return cellImage.image
     }
 
+    var delegate: ImagesListCellDelegate?
+
     // MARK: - Private Properties
 
-    private var isLiked = false
-    private var photoId: String?
     private var isGradientAdded = false
     private var activeLikeButtonImage = UIImage(named: ImagesListCell.activeLikeButtonName) ?? UIImage()
     private var noActiveLikeButtonImage = UIImage(named: ImagesListCell.noActiveLikeButtonName) ?? UIImage()
 
     private lazy var cellButton: UIButton = {
         let cellButton = UIButton(type: .custom)
-        if isLiked {
-            cellButton.setImage(activeLikeButtonImage, for: .normal)
-        } else {
-            cellButton.setImage(noActiveLikeButtonImage, for: .normal)
-        }
+        setIsLiked(photoIsLiked: false)
         cellButton.contentHorizontalAlignment = .center
         cellButton.contentVerticalAlignment = .center
         cellButton.translatesAutoresizingMaskIntoConstraints = false
         cellButton.addTarget(self, action: #selector(cellButtonTouchUpInside), for: .touchUpInside)
+        cellButton.addTarget(self, action: #selector(cellButtonTouchDown), for: .touchDown)
+        cellButton.addTarget(self, action: #selector(cellButtonTouchUpOutside), for: .touchUpOutside)
         return cellButton
     }()
 
@@ -105,6 +103,15 @@ final class ImagesListCell: UITableViewCell {
         isGradientAdded = true
     }
 
+    /// Устанавливает изображение кнопки установки/снятия лайка в соответствии состоянием фотографии в Unsplash
+    /// - Parameter photoIsLiked: Состояние лайка фотографии в Unsplash
+    func setIsLiked(photoIsLiked: Bool) {
+        DispatchQueue.main.async {
+            let cellButtonImage = photoIsLiked ? self.activeLikeButtonImage : self.noActiveLikeButtonImage
+            self.cellButton.setImage(cellButtonImage, for: .normal)
+        }
+    }
+
     /// Выводит на экран содержимое ячейки
     /// - Parameter model: заполненная вью модель ячейки таблицы
     func showCellViewModel(_ model: ImagesListCellViewModel, handler: @escaping (Result<RetrieveImageResult, Error>) -> Void) {
@@ -122,14 +129,13 @@ final class ImagesListCell: UITableViewCell {
                 handler(.failure(error))
             }
         }
-        cellButton.setImage(model.likeButtonImage, for: .normal)
+        setIsLiked(photoIsLiked: model.isLiked)
         cellLabel.text = model.dateLabel
-        isLiked = model.isLiked
-        photoId = model.photoId
-    }
+}
 
     // MARK: - Private Methods
 
+    /// Добавляет элементы управления на вью контроллер
     private func addSubviews() {
         contentView.addSubview(cellImage)
         contentView.addSubview(cellButton)
@@ -137,6 +143,69 @@ final class ImagesListCell: UITableViewCell {
         contentView.addSubview(cellLabel)
     }
 
+    /// Обработчик нажатия на кнопку "Поставить/снять лайк"
+    /// - Parameter sender: объект, генерирующий событие
+    @objc private func cellButtonTouchDown(_ sender: UIButton) {
+        UIView.animateKeyframes(withDuration: 0.2, delay: 0) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2) {
+                sender.transform = CGAffineTransform(scaleX: 2, y: 2)
+            }
+        }
+    }
+
+    /// Обработчик отжатия кнопки "Поставкить/снять лайк" вне границ кнопки
+    /// - Parameter sender: объект, генерирующий событие
+    @objc private func cellButtonTouchUpOutside(_ sender: UIButton) {
+        UIView.animateKeyframes(withDuration: 0.2, delay: 0) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2) {
+                sender.transform = .identity
+            }
+        }
+    }
+
+    /// Обработчик нажатия кнопки "Поставить/снять лайк"
+    /// - Parameter sender: объект, генерирующий событие
+    @objc private func cellButtonTouchUpInside(_ sender: UIButton) {
+        UIView.animateKeyframes(withDuration: 0.2, delay: 0) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2) {
+                sender.transform = .identity
+            }
+        }
+        guard let delegate = delegate else { return }
+
+        sender.isEnabled = false
+        if #available(iOS 17.5, *) {
+            let impact = UIImpactFeedbackGenerator(style: .heavy, view: self)
+            impact.impactOccurred()
+        } else {
+            let impact = UIImpactFeedbackGenerator(style: .heavy)
+            impact.impactOccurred()
+        }
+        UIBlockingProgressHUD.show()
+        UIView.animateKeyframes(withDuration: 0.6, delay: 0, options: [.repeat]) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2) {
+                sender.transform = CGAffineTransform(scaleX: 2, y: 2)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.2) {
+                sender.transform = .identity
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.4, relativeDuration: 0.2) {
+                sender.transform = CGAffineTransform(scaleX: 2, y: 2)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.2) {
+                sender.transform = .identity
+            }
+        }
+        delegate.imageListCellDidTapLike(self) {
+            DispatchQueue.main.async {
+                sender.layer.removeAllAnimations()
+                UIBlockingProgressHUD.dismiss()
+                sender.isEnabled = true
+            }
+        }
+    }
+
+    /// Добавляет элементы управления и их констрейнты на вью контроллере
     private func createAndLayoutViews() {
         contentMode = .scaleToFill
         backgroundColor = .ypBlack
@@ -154,6 +223,7 @@ final class ImagesListCell: UITableViewCell {
         setupConstraints()
     }
 
+    /// Инициализирует констрейнты элементов управления вью контроллера
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             // Изображение
@@ -176,42 +246,6 @@ final class ImagesListCell: UITableViewCell {
             cellLabel.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor, constant: 8),
             cellLabel.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor, constant: -8)
         ])
-    }
-
-    /// Обработчик нажатия кнопки "Поставить/снять лайк"
-    /// - Parameter sender: объект, генерирующий событие
-    @objc private func cellButtonTouchUpInside(_ sender: UIButton) {
-        guard let photoId = photoId else { return }
-
-        sender.isEnabled = false
-        if #available(iOS 17.5, *) {
-            let impact = UIImpactFeedbackGenerator(style: .heavy, view: self)
-            impact.impactOccurred()
-        } else {
-            let impact = UIImpactFeedbackGenerator(style: .heavy)
-            impact.impactOccurred()
-        }
-        ImagesListService.shared.changeLike(photoId: photoId, isLike: !isLiked) { [weak self] result in
-            switch result {
-            case .success:
-                DispatchQueue.main.async {
-                    if let self = self {
-                        self.isLiked.toggle()
-                        if self.isLiked {
-                            self.cellButton.setImage(self.activeLikeButtonImage, for: .normal)
-                        } else {
-                            self.cellButton.setImage(self.noActiveLikeButtonImage, for: .normal)
-                        }
-                    }
-                }
-                print("Лайк/дизлайк успешно установлен")
-            case .failure(let error):
-                print(#fileID, #function, #line, "Ошибка установка/снятия лайка для фотографии, текст ошибки, \(error.localizedDescription)")
-            }
-            DispatchQueue.main.async {
-                sender.isEnabled = true
-            }
-        }
     }
 
     // MARK: - UITableViewCell

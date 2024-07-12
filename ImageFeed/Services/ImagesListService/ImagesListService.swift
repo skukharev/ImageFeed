@@ -36,6 +36,8 @@ final class ImagesListService: ImagesListServiceDelegate {
     private var sessionTask: URLSessionTask?
     /// Bearer-токен авторизации в Unsplash
     private var accessToken: String?
+    /// Преобразователь дат в строковые значения
+    private static let dateFormatter = ISO8601DateFormatter()
 
     // MARK: - Initializers
 
@@ -70,13 +72,12 @@ final class ImagesListService: ImagesListServiceDelegate {
             switch result {
             case .success(let photosData):
                 var imageSize = CGSize()
-                let dateFormatter = ISO8601DateFormatter()
 
                 for element in photosData {
                     imageSize.width = CGFloat(element.width ?? 0)
                     imageSize.height = CGFloat(element.height ?? 0)
                     let imageDescription = element.description ?? element.altDescription ?? ""
-                    let imageDate = dateFormatter.date(from: element.createdAt ?? "") ?? Date()
+                    let imageDate = ImagesListService.dateFormatter.date(from: element.createdAt ?? "") ?? Date()
                     let photo = Photo(id: element.id ?? "", size: imageSize, createdAt: imageDate, welcomeDescription: imageDescription, thumbImageURL: element.urls.thumb ?? "", largeImageURL: element.urls.full ?? "", isLiked: element.likedByUser ?? false)
                     self?.photos.append(photo)
                 }

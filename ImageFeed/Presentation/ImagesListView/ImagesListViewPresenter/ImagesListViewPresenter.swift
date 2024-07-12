@@ -9,6 +9,13 @@ import Foundation
 import UIKit
 
 final class ImagesListViewPresenter {
+    // MARK: - Types
+
+    enum ImagesListViewPresenter: Error {
+        case internalError
+        case networkError
+    }
+
     // MARK: - Public Properties
 
     let photosName: [String] = Array(0..<20).map { "\($0)" }
@@ -53,13 +60,14 @@ final class ImagesListViewPresenter {
         let thumbImageUrl = URL(string: imagesListService?.photos[safe: row]?.thumbImageURL ?? "")
         let fullImageUrl = URL(string: imagesListService?.photos[safe: row]?.largeImageURL ?? "")
         let isLiked = imagesListService?.photos[safe: row]?.isLiked ?? false
-        let buttonPictureName = isLiked ? "ActiveLikeButton" : "NoActiveLikeButton"
-        let buttonPicture = UIImage(named: buttonPictureName) ?? UIImage()
         let photoId = imagesListService?.photos[safe: row]?.id
 
-        return ImagesListCellViewModel(photoId: photoId, thumbImageUrl: thumbImageUrl, fullImageUrl: fullImageUrl, likeButtonImage: buttonPicture, dateLabel: dateFormatter.string(from: imagesListService?.photos[safe: row]?.createdAt ?? Date()), isLiked: isLiked)
+        return ImagesListCellViewModel(photoId: photoId, thumbImageUrl: thumbImageUrl, fullImageUrl: fullImageUrl, dateLabel: dateFormatter.string(from: imagesListService?.photos[safe: row]?.createdAt ?? Date()), isLiked: isLiked)
     }
 
+    /// Возвращает url детального изображения фотографии из ленты фотографий
+    /// - Parameter indexPath: Индекс ячейки ленты с фотографиями
+    /// - Returns: url детального изображения
     func getImageDetailedURL(at indexPath: IndexPath) -> URL? {
         return URL(string: imagesListService?.photos[safe: indexPath.row]?.largeImageURL ?? "")
     }
@@ -91,6 +99,27 @@ final class ImagesListViewPresenter {
             case .success:
                 self?.viewController?.updateHeightOfTableViewCell(at: indexPath)
             case .failure: break
+            }
+        }
+    }
+
+    /// Изменяет состояние лайка изображения в Unsplash на противоположное
+    /// - Parameters:
+    ///   - cell: Ячейка ленты с фотографиями, для которой запрашивается операция изменения состояния лайка на противоположное
+    ///   - completion: Обработчик, выполняемый при завершении операции изменения состояния лайка на противоположное
+    func changeLike(for row: Int, _ completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard let photo = ImagesListService.shared.photos[safe: row] else {
+            print(#fileID, #function, #line, "Внутренняя ошибка доступа к массиву с лентой фотографий")
+            completion(.failure(ImagesListViewPresenter.internalError))
+            return
+        }
+        ImagesListService.shared.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+            switch result {
+            case .failure(let error):
+                print(#fileID, #function, #line, "Ошибка установка/снятия лайка для фотографии, текст ошибки, \(error.localizedDescription)")
+                completion(.failure(ImagesListViewPresenter.networkError))
+            case .success:
+                completion(.success(!photo.isLiked))
             }
         }
     }

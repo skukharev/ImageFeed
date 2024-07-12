@@ -25,7 +25,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ProgressHUD.colorHUD = .black
         ProgressHUD.colorAnimation = .lightGray
 
+        loadRocketSimConnect()
+
         return true
+    }
+
+    private func loadRocketSimConnect() {
+        #if DEBUG
+        guard Bundle(path: "/Applications/RocketSim.app/Contents/Frameworks/RocketSimConnectLinker.nocache.framework")?.load() == true else {
+            return
+        }
+        print("RocketSim Connect successfully linked")
+        #endif
     }
 
     // MARK: UISceneSession Lifecycle

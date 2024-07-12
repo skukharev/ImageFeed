@@ -15,8 +15,6 @@ struct ImagesListCellViewModel {
     let thumbImageUrl: URL?
     /// URL фото для полноэкранного просмотра
     let fullImageUrl: URL?
-    /// Изображение кнопки
-    let likeButtonImage: UIImage
     /// Дата изображения ячейки
     let dateLabel: String
     /// Признак лайка фото
