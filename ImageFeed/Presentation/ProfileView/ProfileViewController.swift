@@ -11,7 +11,7 @@ import Kingfisher
 final class ProfileViewController: UIViewController {
     // MARK: - Public Properties
 
-    var delegate: ProfileViewControllerDelegate?
+    weak var delegate: ProfileViewControllerDelegate?
 
     // MARK: - Private Properties
 

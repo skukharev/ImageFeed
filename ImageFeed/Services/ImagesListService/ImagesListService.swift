@@ -77,7 +77,7 @@ final class ImagesListService: ImagesListServiceDelegate {
                     imageSize.width = CGFloat(element.width ?? 0)
                     imageSize.height = CGFloat(element.height ?? 0)
                     let imageDescription = element.description ?? element.altDescription ?? ""
-                    let imageDate = ImagesListService.dateFormatter.date(from: element.createdAt ?? "") ?? Date()
+                    let imageDate = element.createdAt.flatMap { ImagesListService.dateFormatter.date(from: $0) } ?? Date()
                     let photo = Photo(id: element.id ?? "", size: imageSize, createdAt: imageDate, welcomeDescription: imageDescription, thumbImageURL: element.urls.thumb ?? "", largeImageURL: element.urls.full ?? "", isLiked: element.likedByUser ?? false)
                     self?.photos.append(photo)
                 }

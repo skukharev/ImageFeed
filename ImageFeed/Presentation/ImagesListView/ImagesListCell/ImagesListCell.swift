@@ -21,7 +21,7 @@ final class ImagesListCell: UITableViewCell {
         return cellImage.image
     }
 
-    var delegate: ImagesListCellDelegate?
+    weak var delegate: ImagesListCellDelegate?
 
     // MARK: - Private Properties
 
