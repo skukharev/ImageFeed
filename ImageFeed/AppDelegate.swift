@@ -6,12 +6,37 @@
 //
 
 import UIKit
+import Kingfisher
+import ProgressHUD
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
+        // Настройки глобального кэша Kingfisher
+        let cache = ImageCache.default
+        cache.memoryStorage.config.countLimit = 150
+        cache.diskStorage.config.sizeLimit = 1000 * 1024 * 1024
+        cache.memoryStorage.config.expiration = .days(1)
+        cache.diskStorage.config.expiration = .days(7)
+
+        ProgressHUD.animationType = .activityIndicator
+        ProgressHUD.colorHUD = .black
+        ProgressHUD.colorAnimation = .lightGray
+
+        loadRocketSimConnect()
+
         return true
+    }
+
+    private func loadRocketSimConnect() {
+        #if DEBUG
+        guard Bundle(path: "/Applications/RocketSim.app/Contents/Frameworks/RocketSimConnectLinker.nocache.framework")?.load() == true else {
+            return
+        }
+        print("RocketSim Connect successfully linked")
+        #endif
     }
 
     // MARK: UISceneSession Lifecycle

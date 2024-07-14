@@ -12,6 +12,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
 
     private var presenter: ImagesListViewPresenter?
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    private let defaultImageHeight: CGFloat = 224
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -34,11 +35,29 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         super.viewDidLoad()
 
         createAndLayoutViews()
-        presenter = ImagesListViewPresenter(viewController: self)
 
         tableView.register(ImagesListCell.classForCoder(), forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
-        tableView.rowHeight = 200
+        tableView.rowHeight = defaultImageHeight
+        tableView.estimatedRowHeight = tableView.rowHeight
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+
+        presenter = ImagesListViewPresenter(viewController: self)
+    }
+
+    // MARK: - Public Methods
+
+    public func updateTableViewAnimated() {
+        guard let presenter = presenter else { return }
+        let currentNumberOfRows = tableView.numberOfRows(inSection: 0)
+
+        tableView.performBatchUpdates {
+            var indexPaths: [IndexPath] = []
+            for i in currentNumberOfRows..<presenter.photosCount() {
+                indexPaths.append(IndexPath(row: i, section: 0))
+            }
+            tableView.insertRows(at: indexPaths, with: .automatic)
+        } completion: { _ in
+        }
     }
 
     // MARK: - Private Methods
@@ -66,6 +85,11 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+
+    func updateHeightOfTableViewCell(at indexPath: IndexPath) {
+        // Убрал вызов из-за неприятных визуальных эффектов при скроллинге ленты, но оставил код из-за требований задачи
+        // tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -78,6 +102,7 @@ extension ImagesListViewController: UITableViewDataSource {
     /// - Returns: Возвращает количество строк в секции списка
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let presenter = presenter else { return 1 }
+
         return presenter.photosCount()
     }
 
@@ -93,8 +118,8 @@ extension ImagesListViewController: UITableViewDataSource {
             print(#fileID, #function, #line, "Ошибка приведения типов")
             return UITableViewCell()
         }
-
         configCell(for: imageListCell, with: indexPath)
+        imageListCell.delegate = self
         return imageListCell
     }
 
@@ -103,31 +128,66 @@ extension ImagesListViewController: UITableViewDataSource {
     ///   - cell: Отображаемая ячейка
     ///   - indexPath: Путь индекса строки в секции таблицы
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        cell.setupCellPresentation()
         guard let presenter = presenter else { return }
-        let cellViewModel = presenter.convert(row: indexPath.row)
-        cell.showCellViewModel(cellViewModel)
+        presenter.showCell(for: cell, with: indexPath)
     }
 }
 
 // MARK: - UITableViewDelegate
 
 extension ImagesListViewController: UITableViewDelegate {
+    /// Используется для переопределения высоты заданной строки списка с фотографиями
+    /// - Parameters:
+    ///   - tableView: Список с фотографиями, наследник UITableView
+    ///   - indexPath: Индекс строки, для которой переопределяется высота
+    /// - Returns: Возвращает высоту заданной строки табличного списка
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = presenter?.getImageByCellIndex(row: indexPath.row) else { return 0 }
+        guard let imageSize = presenter?.getImageSizeByIndexPath(at: indexPath) else { return defaultImageHeight }
 
-        let imageScale = tableView.bounds.width / image.size.width
-        return image.size.height * imageScale
+        let imageScale = tableView.bounds.width / imageSize.width
+        return imageSize.height * imageScale
     }
 
+    /// Обработчик выделения заданной строки - отображает модальный вью контроллер с выделенной фотографией
+    /// - Parameters:
+    ///   - tableView: Список с фотографиями, наследник UITableView
+    ///   - indexPath: Индекс выбранной пользователем строки
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let viewController = SingleImageViewController()
         guard let presenter = presenter else {
-            assertionFailure("Ошибка инициализации ImagesListViewPresenter")
+            print(#file, #line, "Презентер для ImagesListViewController не существует")
             return
         }
-        let image = UIImage(named: presenter.photosName[indexPath.row])
-        viewController.image = image
+
+        let viewController = SingleImageViewController()
+        viewController.imageURL = presenter.getImageDetailedURL(at: indexPath)
         present(viewController, animated: true)
+    }
+
+    /// Загрузчик следующей порции фотографий в ленту при достижении конца списка
+    /// - Parameters:
+    ///   - tableView: Список с фотографиями, наследник UITableView
+    ///   - cell: Отображаемая ячейка табличного списка
+    ///   - indexPath: Индекс ячейки табличного списка
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.section != 0 || indexPath.row != tableView.numberOfRows(inSection: 0) - 2 { return }
+        presenter?.fetchPhotosNextPage()
+    }
+}
+
+// MARK: - ImagesListCellDelegate
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell, _ completion: @escaping () -> Void) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            completion()
+            return
+        }
+        presenter?.changeLike(for: indexPath.row) { result in
+            switch result {
+            case .success(let isLiked):
+                cell.setIsLiked(photoIsLiked: isLiked)
+            default: break
+            }
+            completion()
+        }
     }
 }

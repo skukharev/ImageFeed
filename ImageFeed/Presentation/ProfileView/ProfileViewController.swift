@@ -9,6 +9,10 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
+    // MARK: - Public Properties
+
+    weak var delegate: ProfileViewControllerDelegate?
+
     // MARK: - Private Properties
 
     /// Фото профиля
@@ -25,6 +29,7 @@ final class ProfileViewController: UIViewController {
         exitButton.setImage(UIImage(named: "ExitButton"), for: .normal)
         exitButton.tintColor = .ypRed
         exitButton.translatesAutoresizingMaskIntoConstraints = false
+        exitButton.addTarget(self, action: #selector(exitButonTouchUpInside), for: .touchUpInside)
         return exitButton
     }()
 
@@ -72,13 +77,6 @@ final class ProfileViewController: UIViewController {
 
     // MARK: - Private Methods
 
-    /// Создаёт и размещает элементы управления во вью контроллере
-    private func createAndLayoutViews() {
-        view.backgroundColor = .ypBlack
-        addSubviews()
-        setupConstraints()
-    }
-
     /// Создаёт элементы управления в контроллере профиля пользователя
     private func addSubviews() {
         view.addSubview(profilePhoto)
@@ -86,6 +84,34 @@ final class ProfileViewController: UIViewController {
         view.addSubview(userNameLabel)
         view.addSubview(userLoginLabel)
         view.addSubview(userCommentsLabel)
+    }
+
+    /// Создаёт и размещает элементы управления во вью контроллере
+    private func createAndLayoutViews() {
+        view.backgroundColor = .ypBlack
+        addSubviews()
+        setupConstraints()
+    }
+
+    /// Обработчик нажатия кнопки "Выйти из профиля"
+    /// - Parameter sender: объект, генерирующий событие
+    @objc private func exitButonTouchUpInside(_ sender: UIButton) {
+        if #available(iOS 17.5, *) {
+            let impact = UIImpactFeedbackGenerator(style: .heavy, view: self.view)
+            impact.impactOccurred()
+        } else {
+            let impact = UIImpactFeedbackGenerator(style: .heavy)
+            impact.impactOccurred()
+        }
+
+        let alert = UIAlertController(title: "Пока, пока!", message: "Вы уверены, что хотите выйти?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+            self?.presenter?.logoutProfile()
+            self?.delegate?.didProfileLogout(self)
+        })
+        alert.addAction(UIAlertAction(title: "Нет", style: .default))
+        alert.preferredAction = alert.actions[safe: 1]
+        self.present(alert, animated: true)
     }
 
     /// Создаёт и размещает элементы управления в контроллере профиля пользователя

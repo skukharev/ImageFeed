@@ -10,9 +10,6 @@ import UIKit
 final class SplashViewController: UIViewController {
     // MARK: - Private Properties
 
-    /// Сиснглетон для управления токеном авторизации в KeyChain
-    private let oauth2TokenStorage = OAuth2TokenStorage.shared
-
     /// Элемент управления: картинка запуска приложения
     private lazy var launchScreen: UIImageView = {
         let launchScreen = UIImageView()
@@ -33,7 +30,7 @@ final class SplashViewController: UIViewController {
 
         createAndLayoutViews()
 
-        if oauth2TokenStorage.token != nil {
+        if OAuth2TokenStorage.shared.token != nil {
             switchToTabBarController()
         } else {
             switchToAuthenticateViewController()
@@ -72,6 +69,7 @@ final class SplashViewController: UIViewController {
         imagesListViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_editorial_active"), selectedImage: nil)
         // Создание вью контроллера для профиля пользователя
         let profileViewController = ProfileViewController()
+        profileViewController.delegate = self
         profileViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_profile_active"), selectedImage: nil)
         // Создание вью контроллера для таб-бара
         let tabBarController = UITabBarController()
@@ -112,20 +110,28 @@ final class SplashViewController: UIViewController {
 // MARK: - AuthViewControllerDelegate
 
 extension SplashViewController: AuthViewControllerDelegate {
-    /// Вызывается делегатом при успешной авторизации в Unsplash
-    /// - Parameter viewController: экземпляр AuthViewController, сгенерировавший событие
     func didAuthenticate(_ viewController: AuthViewController?) {
         viewController?.dismiss(animated: true)
         switchToTabBarController()
     }
 
-    /// Вызывается делегатом при ошибке авторизации в Unsplash
-    /// - Parameter viewController: экземпляр AuthViewController, сгенерировавший событие
     func didAuthenticateWithError(_ viewController: AuthViewController?) {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             viewController?.present(alert, animated: true)
         }
+    }
+}
+
+// MARK: - ProfileViewControllerDelegate
+
+extension SplashViewController: ProfileViewControllerDelegate {
+    func didProfileLogout(_ viewController: UIViewController?) {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        window.rootViewController = self
     }
 }

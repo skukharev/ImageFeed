@@ -23,12 +23,6 @@ final class ProfileViewPresenter {
         profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
             self?.updateAvatar()
         }
-
-        let cache = ImageCache.default
-        cache.memoryStorage.config.countLimit = 150
-        cache.diskStorage.config.sizeLimit = 1000 * 1024 * 1024
-        cache.memoryStorage.config.expiration = .days(1)
-        cache.diskStorage.config.expiration = .days(7)
     }
 
     // MARK: - Public Methods
@@ -50,14 +44,17 @@ final class ProfileViewPresenter {
             case .success(let currentUserProfile):
                 self?.viewController?.showUserData(userProfile: currentUserProfile)
 
-                ProfileImageService.shared.fetchProfileImageURL(withAccessToken: accessToken, username: currentUserProfile.username) { [weak self] _ in
-                    self?.updateAvatar()
-                }
+                ProfileImageService.shared.fetchProfileImageURL(withAccessToken: accessToken, username: currentUserProfile.username) { _ in }
             case .failure(let error):
                 print(#fileID, #function, #line, "Процесс получения данных профиля завершился с ошибкой \(error)")
                 self?.viewController?.showLoadingProfileError(withError: error)
             }
         }
+    }
+
+    /// Реализует бизнес-логику по выходу из профиля пользователя
+    func logoutProfile() {
+        ProfileLogoutService.shared.logout()
     }
 
     // MARK: - Private Methods
