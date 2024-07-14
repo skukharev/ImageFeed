@@ -16,6 +16,7 @@ final class ImagesListCell: UITableViewCell {
     static let stubImageName = "ImageStub"
     static let noActiveLikeButtonName = "NoActiveLikeButton"
     static let activeLikeButtonName = "ActiveLikeButton"
+    static let cellImageAnimationKey = "CellImageAnimationLocations"
 
     var image: UIImage? {
         return cellImage.image
@@ -28,6 +29,8 @@ final class ImagesListCell: UITableViewCell {
     private var isGradientAdded = false
     private var activeLikeButtonImage = UIImage(named: ImagesListCell.activeLikeButtonName) ?? UIImage()
     private var noActiveLikeButtonImage = UIImage(named: ImagesListCell.noActiveLikeButtonName) ?? UIImage()
+    private var cellImageGradient: CAGradientLayer?
+    private var cellImageGradientAnimation: CABasicAnimation?
 
     private lazy var cellButton: UIButton = {
         let cellButton = UIButton(type: .custom)
@@ -91,10 +94,23 @@ final class ImagesListCell: UITableViewCell {
 
     /// Производит настройки размещения ячейки таблицы в соответствии с техническим заданием
     func setupCellPresentation() {
+        contentView.layoutIfNeeded()
+
+        if let gradient = cellImageGradient {
+            let cellImageAnimation = CABasicAnimation(keyPath: "locations")
+            cellImageAnimation.duration = 1.0
+            cellImageAnimation.repeatCount = .infinity
+            cellImageAnimation.fromValue = [0, 0.1, 0.3]
+            cellImageAnimation.toValue = [0, 0.8, 1]
+
+            gradient.frame = CGRect(origin: .zero, size: CGSize(width: cellImage.frame.width, height: cellImage.frame.height))
+            cellImage.layer.addSublayer(gradient)
+            gradient.add(cellImageAnimation, forKey: ImagesListCell.cellImageAnimationKey)
+        }
+
         if isGradientAdded {
             return
         }
-        contentView.layoutIfNeeded()
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [UIColor.ypBlackAlpha0.cgColor, UIColor.ypBlackAlpha20.cgColor, UIColor.ypBlackAlpha0.cgColor]
         gradientLayer.frame = gradientView.bounds
@@ -121,6 +137,8 @@ final class ImagesListCell: UITableViewCell {
         }
         cellImage.kf.indicatorType = .activity
         cellImage.kf.setImage(with: model.thumbImageUrl, placeholder: stubImage, options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)]) { result in
+            self.cellImage.layer.removeAnimation(forKey: ImagesListCell.cellImageAnimationKey)
+            self.cellImageGradient?.removeFromSuperlayer()
             switch result {
             case .success(let image):
                 handler(.success(image))
@@ -221,6 +239,21 @@ final class ImagesListCell: UITableViewCell {
         contentView.autoresizesSubviews = true
         addSubviews()
         setupConstraints()
+
+        cellImageGradient = CAGradientLayer()
+        if let gradient = cellImageGradient {
+            gradient.frame = CGRect(origin: .zero, size: CGSize(width: cellImage.frame.width, height: cellImage.frame.height))
+            gradient.locations = [0, 0.1, 0.3]
+            gradient.colors = [
+                UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+                UIColor(red: 0.531, green: 0.533, blue: 0.553, alpha: 1).cgColor,
+                UIColor(red: 0.431, green: 0.433, blue: 0.453, alpha: 1).cgColor
+            ]
+            gradient.startPoint = CGPoint(x: 0, y: 0.5)
+            gradient.endPoint = CGPoint(x: 1, y: 0.5)
+            gradient.cornerRadius = 16
+            gradient.masksToBounds = true
+        }
     }
 
     /// Инициализирует констрейнты элементов управления вью контроллера
@@ -255,5 +288,7 @@ final class ImagesListCell: UITableViewCell {
         super.prepareForReuse()
 
         cellImage.kf.cancelDownloadTask()
+        cellImage.layer.removeAnimation(forKey: ImagesListCell.cellImageAnimationKey)
+        cellImageGradient?.removeFromSuperlayer()
     }
 }

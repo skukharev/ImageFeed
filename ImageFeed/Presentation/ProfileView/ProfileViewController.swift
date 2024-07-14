@@ -63,6 +63,11 @@ final class ProfileViewController: UIViewController {
         return userCommentsLabel
     }()
 
+    private var profilePhotoGradient: CAGradientLayer?
+    private var userNameLabelGradient: CAGradientLayer?
+    private var userLoginLabelGradient: CAGradientLayer?
+    private var userCommentsLabelGradient: CAGradientLayer?
+
     private var presenter: ProfileViewPresenter?
 
     // MARK: - UIViewController
@@ -91,6 +96,31 @@ final class ProfileViewController: UIViewController {
         view.backgroundColor = .ypBlack
         addSubviews()
         setupConstraints()
+        setupAnimations()
+    }
+
+    /// Создаёт градиент для заданного визуального элемента с заданным радиусом скругления
+    /// - Parameters:
+    ///   - view: Элемент управления, для которого создаётся градиент
+    ///   - withCornerRadius: Радиус скругления градиента
+    /// - Returns: Слой с градиентом
+    private func addGradientToView(_ view: UIView, withCornerRadius: CGFloat) -> CAGradientLayer {
+        let gradient = CAGradientLayer()
+        view.layoutIfNeeded()
+        gradient.frame = CGRect(origin: .zero, size: CGSize(width: view.frame.width, height: view.frame.height))
+        gradient.locations = [0, 0.1, 0.3]
+        gradient.colors = [
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+            UIColor(red: 0.531, green: 0.533, blue: 0.553, alpha: 1).cgColor,
+            UIColor(red: 0.431, green: 0.433, blue: 0.453, alpha: 1).cgColor
+        ]
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+        gradient.cornerRadius = withCornerRadius
+        gradient.masksToBounds = true
+        view.layer.addSublayer(gradient)
+
+        return gradient
     }
 
     /// Обработчик нажатия кнопки "Выйти из профиля"
@@ -112,6 +142,27 @@ final class ProfileViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Нет", style: .default))
         alert.preferredAction = alert.actions[safe: 1]
         self.present(alert, animated: true)
+    }
+
+    /// Добавляет градиенты и их анимацию к элементам управления
+    private func setupAnimations() {
+        let gradientChangeAnimation = CABasicAnimation(keyPath: "locations")
+        gradientChangeAnimation.duration = 1.0
+        gradientChangeAnimation.repeatCount = .infinity
+        gradientChangeAnimation.fromValue = [0, 0.1, 0.3]
+        gradientChangeAnimation.toValue = [0, 0.8, 1]
+
+        profilePhotoGradient = addGradientToView(profilePhoto, withCornerRadius: 35)
+        profilePhotoGradient?.add(gradientChangeAnimation, forKey: "profilePhotoGradient")
+
+        userNameLabelGradient = addGradientToView(userNameLabel, withCornerRadius: 9)
+        userNameLabelGradient?.add(gradientChangeAnimation, forKey: "userNameLabelGradient")
+
+        userLoginLabelGradient = addGradientToView(userLoginLabel, withCornerRadius: 9)
+        userLoginLabelGradient?.add(gradientChangeAnimation, forKey: "userLoginLabelGradient")
+
+        userCommentsLabelGradient = addGradientToView(userCommentsLabel, withCornerRadius: 9)
+        userLoginLabelGradient?.add(gradientChangeAnimation, forKey: "userLoginLabelGradient")
     }
 
     /// Создаёт и размещает элементы управления в контроллере профиля пользователя
@@ -153,6 +204,9 @@ extension ProfileViewController: ProfileViewPresenterDelegate {
 
     func showUserData(userProfile: UnsplashCurrentUserProfile) {
         UIBlockingProgressHUD.dismiss()
+        userNameLabelGradient?.removeFromSuperlayer()
+        userLoginLabelGradient?.removeFromSuperlayer()
+        userCommentsLabelGradient?.removeFromSuperlayer()
 
         userNameLabel.text = userProfile.firstName
         if let lastName = userProfile.lastName {
@@ -173,6 +227,7 @@ extension ProfileViewController: ProfileViewPresenterDelegate {
         profilePhoto.kf.indicatorType = .activity
         profilePhoto.kf.setImage(with: url, placeholder: imagePlaceholder, options: [.processor(processor), .cacheSerializer(FormatIndicatedCacheSerializer.png)]) { result in
             UIBlockingProgressHUD.dismiss()
+            self.profilePhotoGradient?.removeFromSuperlayer()
 
             switch result {
             case .success: break

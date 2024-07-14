@@ -30,10 +30,6 @@ final class ProfileViewPresenter {
     /// Реализует бизнес-логику по загрузке данных профиля пользователя из личного кабинета Unsplash
     func loadProfileData() {
         UIBlockingProgressHUD.show()
-        //  TODO: Удалить загрузку данных из profileService.currentUserProfile после изучения анимации в 12 спринте
-        if let currentUserProfile = ProfileService.shared.currentUserProfile {
-            viewController?.showUserData(userProfile: currentUserProfile)
-        }
         guard let accessToken = OAuth2TokenStorage.shared.token else {
             assertionFailure("Bearer-токен не обнаружен в хранилище UserDefaults")
             return
