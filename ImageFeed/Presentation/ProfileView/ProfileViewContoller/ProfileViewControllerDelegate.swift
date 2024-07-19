@@ -11,4 +11,5 @@ import UIKit
 protocol ProfileViewControllerDelegate: AnyObject {
     /// Обработчик события выхода из профиля пользователя
     func didProfileLogout(_ viewController: UIViewController?)
+    /// Используется для связи вью контроллера с презентером
 }

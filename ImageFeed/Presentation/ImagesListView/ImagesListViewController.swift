@@ -46,6 +46,13 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
 
     // MARK: - Public Methods
 
+    /// Используется для связи вью контроллера с презентером
+    /// - Parameter presenter: презентер вью контроллера
+    func configure(_ presenter: ImagesListViewPresenter) {
+        self.presenter = presenter
+        presenter.viewController = self
+    }
+
     public func updateTableViewAnimated() {
         guard let presenter = presenter else { return }
         let currentNumberOfRows = tableView.numberOfRows(inSection: 0)

@@ -8,17 +8,9 @@
 import Foundation
 
 final class AuthHelper: AuthHelperProtocol {
-    // MARK: - Types
-
     // MARK: - Constants
 
     let configuration: AuthConfiguration
-
-    // MARK: - Public Properties
-
-    // MARK: - IBOutlet
-
-    // MARK: - Private Properties
 
     // MARK: - Initializers
 
@@ -26,7 +18,6 @@ final class AuthHelper: AuthHelperProtocol {
         self.configuration = configuration
     }
 
-    // MARK: - UIViewController(*)
 
     // MARK: - Public Methods
 
@@ -50,6 +41,8 @@ final class AuthHelper: AuthHelperProtocol {
 
     // MARK: - Private Methods
 
+    /// Формирует url авторизационного запроса к Unsplash в соответствии с п.п. 1 https://unsplash.com/documentation/user-authentication-workflow
+    /// - Returns: Возвращает url авторизационного запроса либо nil в случае ошибки при формировании url
     private func authURL() -> URL? {
         guard var urlComponents = URLComponents(string: configuration.authURLString) else {
             assertionFailure("Ошибка сборки URL из строковой константы")

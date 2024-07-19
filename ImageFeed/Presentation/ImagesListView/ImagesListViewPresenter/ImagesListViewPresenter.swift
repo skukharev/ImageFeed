@@ -18,12 +18,12 @@ final class ImagesListViewPresenter {
 
     // MARK: - Public Properties
 
+    weak var viewController: ImagesListViewPresenterDelegate?
     let photosName: [String] = Array(0..<20).map { "\($0)" }
     static let stubImageName = "ImageStub"
 
     // MARK: - Private Properties
 
-    weak private var viewController: ImagesListViewPresenterDelegate?
     private var imagesListService: ImagesListServiceDelegate?
 
     private lazy var dateFormatter: DateFormatter = {

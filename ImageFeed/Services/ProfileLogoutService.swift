@@ -19,7 +19,6 @@ final class ProfileLogoutService {
         cleanCookies()
         OAuth2TokenStorage.shared.token = nil
         ProfileService.shared.logout()
-        ProfileImageService.shared.logout()
         ImagesListService.shared.logout()
     }
 

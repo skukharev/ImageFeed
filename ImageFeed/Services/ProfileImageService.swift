@@ -21,10 +21,6 @@ final class ProfileImageService {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
 
-    // MARK: - Public Properties
-
-    private(set) var avatarURL: String?
-
     // MARK: - Private Properties
 
     private var sessionTask: URLSessionTask?
@@ -48,9 +44,8 @@ final class ProfileImageService {
         sessionTask = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UnsplashUserPublicProfile, any Error>) in
             switch result {
             case .success(let userProfileData):
-                self?.avatarURL = userProfileData.profileImage.small
-                handler(.success(self?.avatarURL ?? ""))
-                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": self?.avatarURL as Any])
+                handler(.success(userProfileData.profileImage.small ?? ""))
+                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": userProfileData.profileImage.small as Any])
                 self?.sessionTask = nil
             case .failure(let error):
                 handler(.failure(ProfileImageServiceError.urlRequestError(error)))
@@ -58,11 +53,6 @@ final class ProfileImageService {
             }
         }
         sessionTask?.resume()
-    }
-
-    /// Очищает данные профиля
-    func logout() {
-        avatarURL = nil
     }
 
     // MARK: - Private Methods

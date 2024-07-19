@@ -71,6 +71,8 @@ final class SplashViewController: UIViewController {
         let profileViewController = ProfileViewController()
         profileViewController.delegate = self
         profileViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_profile_active"), selectedImage: nil)
+        let presenter = ProfileViewPresenter()
+        profileViewController.configure(presenter)
         // Создание вью контроллера для таб-бара
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [imagesListViewController, profileViewController]
@@ -89,11 +91,6 @@ final class SplashViewController: UIViewController {
             return
         }
         window.rootViewController = tabBarController
-
-        UIBlockingProgressHUD.show()
-        let profileViewPresenter = ProfileViewPresenter(viewController: nil)
-        profileViewPresenter.loadProfileData()
-        UIBlockingProgressHUD.dismiss()
     }
 
     /// Переключает UI на страницу авторизации в приложении
