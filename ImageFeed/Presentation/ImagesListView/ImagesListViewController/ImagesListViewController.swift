@@ -10,7 +10,7 @@ import UIKit
 final class ImagesListViewController: UIViewController, ImagesListViewPresenterDelegate {
     // MARK: - Private Properties
 
-    private var presenter: ImagesListViewPresenter?
+    private var presenter: ImagesListViewPresenterProtocol?
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private let defaultImageHeight: CGFloat = 224
 
@@ -41,14 +41,14 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
 
-        presenter = ImagesListViewPresenter(viewController: self)
+        presenter?.fetchPhotosNextPage()
     }
 
     // MARK: - Public Methods
 
     /// Используется для связи вью контроллера с презентером
     /// - Parameter presenter: презентер вью контроллера
-    func configure(_ presenter: ImagesListViewPresenter) {
+    func configure(_ presenter: ImagesListViewPresenterProtocol) {
         self.presenter = presenter
         presenter.viewController = self
     }

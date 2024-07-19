@@ -67,12 +67,14 @@ final class SplashViewController: UIViewController {
         // Создание вью контроллера для ленты изображений
         let imagesListViewController = ImagesListViewController()
         imagesListViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_editorial_active"), selectedImage: nil)
+        let imagesListViewPresenter = ImagesListViewPresenter()
+        imagesListViewController.configure(imagesListViewPresenter)
         // Создание вью контроллера для профиля пользователя
         let profileViewController = ProfileViewController()
         profileViewController.delegate = self
         profileViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_profile_active"), selectedImage: nil)
-        let presenter = ProfileViewPresenter()
-        profileViewController.configure(presenter)
+        let profileViewPresenter = ProfileViewPresenter()
+        profileViewController.configure(profileViewPresenter)
         // Создание вью контроллера для таб-бара
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [imagesListViewController, profileViewController]
