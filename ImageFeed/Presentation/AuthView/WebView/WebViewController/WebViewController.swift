@@ -1,5 +1,5 @@
 //
-//  WebViewViewController.swift
+//  WebViewController.swift
 //  ImageFeed
 //
 //  Created by Сергей Кухарев on 09.06.2024.
@@ -27,6 +27,7 @@ final class WebViewController: UIViewController, WebViewControllerProtocol {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.backgroundColor = .ypWhite
+        webView.accessibilityIdentifier = "UnsplashWebView"
         return webView
     }()
 

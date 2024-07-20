@@ -63,7 +63,7 @@ final class ImagesListService: ImagesListServiceDelegate {
             return
         }
 
-        guard let request = constructPhotosRequest(withAccessToken: accessToken, page: lastLoadedPage + 1, perPage: 13) else {
+        guard let request = constructPhotosRequest(withAccessToken: accessToken, page: lastLoadedPage + 1, perPage: Constants.photosPerPageCount) else {
             assertionFailure("Ошибка формирования запроса получения списка фотографий")
             return
         }

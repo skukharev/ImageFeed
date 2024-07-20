@@ -9,11 +9,6 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    // MARK: - Public Properties
-
-    /// Ссылка на родительский объект
-    var delegate: ProfileViewControllerDelegate?
-
     // MARK: - Private Properties
 
     /// Фото профиля
@@ -30,6 +25,7 @@ final class ProfileViewController: UIViewController {
         exitButton.tintColor = .ypRed
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         exitButton.addTarget(self, action: #selector(exitButonTouchUpInside), for: .touchUpInside)
+        exitButton.accessibilityIdentifier = "ExitButton"
         return exitButton
     }()
     /// Имя пользователя
@@ -140,10 +136,6 @@ final class ProfileViewController: UIViewController {
 // MARK: - ProfileViewPresenterDelegate
 
 extension ProfileViewController: ProfileViewPresenterDelegate {
-    func didProfileLogout() {
-        delegate?.didProfileLogout(self)
-    }
-
     func showAlert(_ alert: UIAlertController) {
         present(alert, animated: true)
     }

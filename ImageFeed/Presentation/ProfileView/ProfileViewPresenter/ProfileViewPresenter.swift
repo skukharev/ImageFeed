@@ -67,7 +67,11 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     /// Реализует бизнес-логику по выходу из профиля пользователя
     func logoutProfile() {
         ProfileLogoutService.shared.logout()
-        viewController?.didProfileLogout()
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        window.rootViewController = SplashViewController()
     }
 
     // MARK: - Private Methods

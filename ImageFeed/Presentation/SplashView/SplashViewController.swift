@@ -27,9 +27,7 @@ final class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
         createAndLayoutViews()
-
         if OAuth2TokenStorage.shared.token != nil {
             switchToTabBarController()
         } else {
@@ -71,7 +69,6 @@ final class SplashViewController: UIViewController {
         imagesListViewController.configure(imagesListViewPresenter)
         // Создание вью контроллера для профиля пользователя
         let profileViewController = ProfileViewController()
-        profileViewController.delegate = self
         profileViewController.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "tab_profile_active"), selectedImage: nil)
         let profileViewPresenter = ProfileViewPresenter()
         profileViewController.configure(profileViewPresenter)
@@ -86,7 +83,6 @@ final class SplashViewController: UIViewController {
         if #available(iOS 15.0, *) {
             tabBarController.tabBar.scrollEdgeAppearance = appearance
         }
-
         // Получаем экземпляр `window` приложения
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
@@ -120,17 +116,5 @@ extension SplashViewController: AuthViewControllerDelegate {
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             viewController?.present(alert, animated: true)
         }
-    }
-}
-
-// MARK: - ProfileViewControllerDelegate
-
-extension SplashViewController: ProfileViewControllerDelegate {
-    func didProfileLogout(_ viewController: UIViewController?) {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
-        }
-        window.rootViewController = self
     }
 }

@@ -18,6 +18,4 @@ protocol ProfileViewPresenterDelegate: AnyObject {
     /// Отображает алерт в окне делегата
     /// - Parameter alert: алерт для отображения
     func showAlert(_ alert: UIAlertController)
-    /// Сообщает делегату о выходе из профиля пользователя
-    func didProfileLogout()
 }
