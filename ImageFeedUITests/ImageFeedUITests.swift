@@ -9,6 +9,11 @@ import XCTest
 
 final class ImageFeedUITests: XCTestCase {
     private var app = XCUIApplication() // переменная приложения
+    #warning("Перед тестированием ввести имя реквизиты учётной записи в Unsplash")
+    private enum Credentials {
+        static let userLogin = ""
+        static let userPassword = ""
+    }
 
     override func setUpWithError() throws {
         continueAfterFailure = false // настройка выполнения тестов, которая прекратит выполнения тестов, если в тесте что-то пошло не так
@@ -28,15 +33,13 @@ final class ImageFeedUITests: XCTestCase {
         let loginTextField = webView.descendants(matching: .textField).element
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         loginTextField.tap()
-        #warning("Вставить логин Unsplash перед тестированием")
-        loginTextField.typeText("")
+        loginTextField.typeText(Credentials.userLogin)
         app.toolbars["Toolbar"].buttons["Далее"].tap()              // webView.swipeUp() не приводит к сокрытию клавиатуры на экране iPhone 15 Pro Max
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         passwordTextField.tap()
         sleep(1)
-        #warning("Вставить пароль Unsplash перед тестированием")
-        passwordTextField.typeText("")
+        passwordTextField.typeText(Credentials.userPassword)
         print(app.debugDescription)
         // Нажать кнопку логина
         webView.buttons["Login"].tap()
