@@ -38,7 +38,7 @@ final class AuthViewController: UIViewController {
         loginButton.backgroundColor = .ypWhite
         loginButton.layer.cornerRadius = 16
         loginButton.addTarget(self, action: #selector(loginButtonTouchUpInside), for: .touchUpInside)
-        loginButton.accessibilityIdentifier = "Authenticate"
+        loginButton.accessibilityIdentifier = "LoginButton"
         return loginButton
     }()
 

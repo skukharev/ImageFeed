@@ -20,9 +20,9 @@ final class ImageFeedUITests: XCTestCase {
         // Нажать кнопку авторизации
         /* У приложения мы получаем список кнопок на экране и получаем нужную кнопку по тексту на ней. Далее вызываем функцию tap() для нажатия на этот элемент
         */
-        app.buttons["Authenticate"].tap()
+        app.buttons["LoginButton"].tap()
         // Подождать, пока экран авторизации открывается и загружается
-        let webView = app.webViews["UnsplashWebView"]
+        let webView = app.webViews["WebView"]
         XCTAssertTrue(webView.waitForExistence(timeout: 10))
         // Ввести данные в форму
         let loginTextField = webView.descendants(matching: .textField).element
@@ -108,7 +108,7 @@ final class ImageFeedUITests: XCTestCase {
         app.alerts["Пока, пока!"].scrollViews.otherElements.buttons["Да"].tap()
         sleep(1)
         // Проверить, что открылся экран авторизации
-        XCTAssertTrue(app.buttons["Authenticate"].exists)
+        XCTAssertTrue(app.buttons["LoginButton"].exists)
     }
 
     override func tearDownWithError() throws {
