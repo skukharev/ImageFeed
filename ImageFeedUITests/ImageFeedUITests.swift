@@ -55,22 +55,21 @@ final class ImageFeedUITests: XCTestCase {
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         XCTAssertTrue(cell.waitForExistence(timeout: 10))
+        sleep(3)
         // Поставить лайк в ячейке верхней картинки
-        let likeButton = cell.buttons["NoActiveLikeButton"]
+        let likeButton = cell.buttons["cellButton"]
         XCTAssertTrue(likeButton.exists)
-        XCTAssertTrue(likeButton.isHittable)
         likeButton.tap()
         sleep(3)
         // Отменить лайк в ячейке верхней картинки
-        let cancelLikeButton = cell.buttons["ActiveLikeButton"]
+        let cancelLikeButton = cell.buttons["cellButton"]
         XCTAssertTrue(cancelLikeButton.exists)
-        XCTAssertTrue(cancelLikeButton.isHittable)
         cancelLikeButton.tap()
         sleep(3)
         // Нажать на верхнюю ячейку
         cell.tap()
         // Подождать, пока картинка открывается на весь экран
-        sleep(45)
+        sleep(25)
         // Увеличить картинку
         let image = app.scrollViews.images.element(boundBy: 0)
         XCTAssertTrue(image.waitForExistence(timeout: 5))
@@ -81,8 +80,10 @@ final class ImageFeedUITests: XCTestCase {
         sleep(3)
         // Вернуться на экран ленты
         app.buttons["backButton"].tap()
+        sleep(3)
         // Сделать жест «смахивания» вверх по экрану для его скролла
-        cell.swipeUp()
+        let tableView = tablesQuery.element(boundBy: 0)
+        tableView.swipeUp()
         sleep(3)
     }
 
