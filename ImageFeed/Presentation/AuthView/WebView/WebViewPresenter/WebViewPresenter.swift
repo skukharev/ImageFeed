@@ -12,6 +12,16 @@ final class WebViewPresenter: WebViewPresenterProtocol {
 
     weak var view: WebViewControllerProtocol?
 
+    // MARK: - Private Properties
+
+    private var authHelper: AuthHelperProtocol
+
+    // MARK: - Initializers
+
+    init(authHelper: AuthHelperProtocol) {
+        self.authHelper = authHelper
+    }
+
     // MARK: - Public Methods
 
     func code(from url: URL) -> String? {
@@ -40,15 +50,5 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         }
         view?.load(request: request)
         didUpdateProgressValue(0)
-    }
-
-    // MARK: - Private Properties
-
-    private var authHelper: AuthHelperProtocol
-
-    // MARK: - Initializers
-
-    init(authHelper: AuthHelperProtocol) {
-        self.authHelper = authHelper
     }
 }
