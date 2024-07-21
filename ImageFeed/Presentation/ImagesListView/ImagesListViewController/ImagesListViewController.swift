@@ -26,6 +26,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         tableView.insetsContentViewsToSafeArea = true
         tableView.contentInsetAdjustmentBehavior = .automatic
         tableView.backgroundColor = .ypBlack
+        tableView.accessibilityIdentifier = "ImagesViewController.tableView"
         return tableView
     }()
 
