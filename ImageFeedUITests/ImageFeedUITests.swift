@@ -17,6 +17,7 @@ final class ImageFeedUITests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false // настройка выполнения тестов, которая прекратит выполнения тестов, если в тесте что-то пошло не так
+        app.launchEnvironment = ["TEST": "true"]
         app.launch() // запускаем приложение перед каждым тестом
     }
 

@@ -150,7 +150,6 @@ extension ImagesListViewController: UITableViewDelegate {
     /// - Returns: Возвращает высоту заданной строки табличного списка
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let imageSize = presenter?.getImageSizeByIndexPath(at: indexPath) else { return defaultImageHeight }
-
         let imageScale = tableView.bounds.width / imageSize.width
         return imageSize.height * imageScale
     }
@@ -164,7 +163,6 @@ extension ImagesListViewController: UITableViewDelegate {
             print(#file, #line, "Презентер для ImagesListViewController не существует")
             return
         }
-
         let viewController = SingleImageViewController()
         viewController.imageURL = presenter.getImageDetailedURL(at: indexPath)
         present(viewController, animated: true)
@@ -177,6 +175,7 @@ extension ImagesListViewController: UITableViewDelegate {
     ///   - indexPath: Индекс ячейки табличного списка
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.section != 0 || indexPath.row != tableView.numberOfRows(inSection: 0) - 2 { return }
+        if ProcessInfo.processInfo.environment["TEST"] != nil { return }    // Исключение лишних запросов данных при ui-тестировании
         presenter?.fetchPhotosNextPage()
     }
 }
