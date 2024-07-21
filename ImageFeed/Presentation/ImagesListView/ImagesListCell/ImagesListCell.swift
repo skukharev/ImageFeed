@@ -38,6 +38,7 @@ final class ImagesListCell: UITableViewCell {
         cellButton.addTarget(self, action: #selector(cellButtonTouchUpInside), for: .touchUpInside)
         cellButton.addTarget(self, action: #selector(cellButtonTouchDown), for: .touchDown)
         cellButton.addTarget(self, action: #selector(cellButtonTouchUpOutside), for: .touchUpOutside)
+        cellButton.accessibilityIdentifier = "cellButton"
         return cellButton
     }()
 

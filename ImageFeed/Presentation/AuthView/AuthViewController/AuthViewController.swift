@@ -38,6 +38,7 @@ final class AuthViewController: UIViewController {
         loginButton.backgroundColor = .ypWhite
         loginButton.layer.cornerRadius = 16
         loginButton.addTarget(self, action: #selector(loginButtonTouchUpInside), for: .touchUpInside)
+        loginButton.accessibilityIdentifier = "LoginButton"
         return loginButton
     }()
 
@@ -74,9 +75,13 @@ final class AuthViewController: UIViewController {
     }
 
     @objc private func loginButtonTouchUpInside() {
-        let viewController = WebViewController()
-        viewController.delegate = self
-        self.navigationController?.pushViewController(viewController, animated: true)
+        let webViewController = WebViewController()
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+        webViewController.presenter = webViewPresenter
+        webViewPresenter.view = webViewController
+        webViewController.delegate = self
+        self.navigationController?.pushViewController(webViewController, animated: true)
     }
 
     /// Устанавливает констрейнты для элементов управления

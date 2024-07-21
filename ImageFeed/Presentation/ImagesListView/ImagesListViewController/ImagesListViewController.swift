@@ -10,7 +10,7 @@ import UIKit
 final class ImagesListViewController: UIViewController, ImagesListViewPresenterDelegate {
     // MARK: - Private Properties
 
-    private var presenter: ImagesListViewPresenter?
+    private var presenter: ImagesListViewPresenterProtocol?
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private let defaultImageHeight: CGFloat = 224
 
@@ -26,6 +26,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         tableView.insetsContentViewsToSafeArea = true
         tableView.contentInsetAdjustmentBehavior = .automatic
         tableView.backgroundColor = .ypBlack
+        tableView.accessibilityIdentifier = "ImagesViewController.tableView"
         return tableView
     }()
 
@@ -41,10 +42,17 @@ final class ImagesListViewController: UIViewController, ImagesListViewPresenterD
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
 
-        presenter = ImagesListViewPresenter(viewController: self)
+        presenter?.fetchPhotosNextPage()
     }
 
     // MARK: - Public Methods
+
+    /// Используется для связи вью контроллера с презентером
+    /// - Parameter presenter: презентер вью контроллера
+    func configure(_ presenter: ImagesListViewPresenterProtocol) {
+        self.presenter = presenter
+        presenter.viewController = self
+    }
 
     public func updateTableViewAnimated() {
         guard let presenter = presenter else { return }
@@ -143,7 +151,6 @@ extension ImagesListViewController: UITableViewDelegate {
     /// - Returns: Возвращает высоту заданной строки табличного списка
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let imageSize = presenter?.getImageSizeByIndexPath(at: indexPath) else { return defaultImageHeight }
-
         let imageScale = tableView.bounds.width / imageSize.width
         return imageSize.height * imageScale
     }
@@ -157,7 +164,6 @@ extension ImagesListViewController: UITableViewDelegate {
             print(#file, #line, "Презентер для ImagesListViewController не существует")
             return
         }
-
         let viewController = SingleImageViewController()
         viewController.imageURL = presenter.getImageDetailedURL(at: indexPath)
         present(viewController, animated: true)
@@ -170,6 +176,7 @@ extension ImagesListViewController: UITableViewDelegate {
     ///   - indexPath: Индекс ячейки табличного списка
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.section != 0 || indexPath.row != tableView.numberOfRows(inSection: 0) - 2 { return }
+        if ProcessInfo.processInfo.environment["TEST"] != nil { return }    // Исключение лишних запросов данных при ui-тестировании
         presenter?.fetchPhotosNextPage()
     }
 }

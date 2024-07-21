@@ -2,13 +2,14 @@
 //  Constants.swift
 //  ImageFeed
 //
-//  Created by Сергей Кухарев on 09.06.2024.
+//  Created by Сергей Кухарев on 20.07.2024.
 //
 
 import Foundation
 
 /// Глобальные константы проекта
 enum Constants {
+    static let photosPerPageCount = 10
     static let accessKey = "VFgSF7fgYnvg8uTpGVuZmB6Xi1fUnoG4us0DbJGuVLk"
     static let secretKey = "Qi8MPXn8w_nmzZG3WvXsJzlLVeW7pPDTYrIvtf5ppDE"
     static let redirectURI = "urn:ietf:wg:oauth:2.0:oob"

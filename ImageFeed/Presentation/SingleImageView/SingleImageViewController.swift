@@ -27,9 +27,9 @@ final class SingleImageViewController: UIViewController {
         backButton.contentHorizontalAlignment = .center
         backButton.contentVerticalAlignment = .center
         backButton.addTarget(self, action: #selector(backButtonTouchUpInside), for: .touchUpInside)
+        backButton.accessibilityIdentifier = "SingleImageViewController.backButton"
         return backButton
     }()
-
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -41,9 +41,9 @@ final class SingleImageViewController: UIViewController {
         scrollView.delegate = self
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
+        scrollView.accessibilityIdentifier = "SingleImageViewController.scrollView"
         return scrollView
     }()
-
     private lazy var shareImageButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -51,9 +51,9 @@ final class SingleImageViewController: UIViewController {
         button.contentHorizontalAlignment = .center
         button.contentVerticalAlignment = .center
         button.addTarget(self, action: #selector(shareImageButtonTouchUpInside), for: .touchUpInside)
+        button.accessibilityIdentifier = "SingleImageViewController.shareImageButton"
         return button
     }()
-
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -61,9 +61,9 @@ final class SingleImageViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.autoresizesSubviews = true
+        imageView.accessibilityIdentifier = "SingleImageViewController.imageView"
         return imageView
     }()
-
     private var stubImage = UIImage(named: SingleImageViewController.detailedStubImageName)
 
     // MARK: - UIViewController

@@ -9,20 +9,15 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    // MARK: - Public Properties
-
-    weak var delegate: ProfileViewControllerDelegate?
-
     // MARK: - Private Properties
 
     /// Фото профиля
     private lazy var profilePhoto: UIImageView = {
         let profilePhoto = UIImageView()
-        profilePhoto.image = UIImage(named: "ProfilePhoto") ?? UIImage()
+        profilePhoto.image = UIImage(named: "ProfilePlaceholder") ?? UIImage()
         profilePhoto.translatesAutoresizingMaskIntoConstraints = false
         return profilePhoto
     }()
-
     /// Кнопка выхода из профиля
     private lazy var exitButton: UIButton = {
         let exitButton = UIButton(type: .system)
@@ -30,9 +25,9 @@ final class ProfileViewController: UIViewController {
         exitButton.tintColor = .ypRed
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         exitButton.addTarget(self, action: #selector(exitButonTouchUpInside), for: .touchUpInside)
+        exitButton.accessibilityIdentifier = "ExitButton"
         return exitButton
     }()
-
     /// Имя пользователя
     private lazy var userNameLabel: UILabel = {
         let userNameLabel = UILabel()
@@ -42,7 +37,6 @@ final class ProfileViewController: UIViewController {
         userNameLabel.translatesAutoresizingMaskIntoConstraints = false
         return userNameLabel
     }()
-
     /// Логин пользователя
     private lazy var userLoginLabel: UILabel = {
         let userLoginLabel = UILabel()
@@ -52,7 +46,6 @@ final class ProfileViewController: UIViewController {
         userLoginLabel.translatesAutoresizingMaskIntoConstraints = false
         return userLoginLabel
     }()
-
     /// Комментарии пользователя
     private lazy var userCommentsLabel: UILabel = {
         let userCommentsLabel = UILabel()
@@ -62,17 +55,25 @@ final class ProfileViewController: UIViewController {
         userCommentsLabel.translatesAutoresizingMaskIntoConstraints = false
         return userCommentsLabel
     }()
-
-    private var presenter: ProfileViewPresenter?
+    /// Ссылка на обработчик бизнес-логики
+    private var presenter: ProfileViewPresenterProtocol?
 
     // MARK: - UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        presenter = ProfileViewPresenter(viewController: self)
         createAndLayoutViews()
         presenter?.loadProfileData()
+    }
+
+    // MARK: - Public Methods
+
+    /// Используется для связи вью контроллера с презентером
+    /// - Parameter presenter: презентер вью контроллера
+    func configure(_ presenter: ProfileViewPresenterProtocol) {
+        self.presenter = presenter
+        presenter.viewController = self
     }
 
     // MARK: - Private Methods
@@ -95,7 +96,7 @@ final class ProfileViewController: UIViewController {
 
     /// Обработчик нажатия кнопки "Выйти из профиля"
     /// - Parameter sender: объект, генерирующий событие
-    @objc private func exitButonTouchUpInside(_ sender: UIButton) {
+    @objc func exitButonTouchUpInside(_ sender: UIButton) {
         if #available(iOS 17.5, *) {
             let impact = UIImpactFeedbackGenerator(style: .heavy, view: self.view)
             impact.impactOccurred()
@@ -103,15 +104,7 @@ final class ProfileViewController: UIViewController {
             let impact = UIImpactFeedbackGenerator(style: .heavy)
             impact.impactOccurred()
         }
-
-        let alert = UIAlertController(title: "Пока, пока!", message: "Вы уверены, что хотите выйти?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Да", style: .default) { [weak self] _ in
-            self?.presenter?.logoutProfile()
-            self?.delegate?.didProfileLogout(self)
-        })
-        alert.addAction(UIAlertAction(title: "Нет", style: .default))
-        alert.preferredAction = alert.actions[safe: 1]
-        self.present(alert, animated: true)
+        presenter?.didLogoutButtonPressed()
     }
 
     /// Создаёт и размещает элементы управления в контроллере профиля пользователя
@@ -143,17 +136,11 @@ final class ProfileViewController: UIViewController {
 // MARK: - ProfileViewPresenterDelegate
 
 extension ProfileViewController: ProfileViewPresenterDelegate {
-    func showLoadingProfileError(withError: Error) {
-        UIBlockingProgressHUD.dismiss()
-
-        let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось получить данные профиля пользователя", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+    func showAlert(_ alert: UIAlertController) {
         present(alert, animated: true)
     }
 
     func showUserData(userProfile: UnsplashCurrentUserProfile) {
-        UIBlockingProgressHUD.dismiss()
-
         userNameLabel.text = userProfile.firstName
         if let lastName = userProfile.lastName {
             userNameLabel.text?.append(contentsOf: " " + lastName)
