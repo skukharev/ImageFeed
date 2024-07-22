@@ -92,10 +92,11 @@ final class ImageFeedUITests: XCTestCase {
 
     /// Тестирование сценария использования ленты фотографий (продвинутое)
     func testFeedAdvanced() throws {
-        let imagesViewControllerPage = ImagesViewControllerPage(application: app)
+        let imagesViewControllerPage = ImagesViewControllerElements(application: app)
         // Подождать, пока открывается и загружается экран ленты
         let tableView = imagesViewControllerPage.tableViewElement()
         XCTAssertTrue(tableView.exists)
+        sleep(10)
         let firstCell = imagesViewControllerPage.getFirstLikableCell()
         XCTAssertNotNil(firstCell)
         guard let firstCell = firstCell else { return }
@@ -121,7 +122,7 @@ final class ImageFeedUITests: XCTestCase {
         // Подождать, пока картинка открывается на весь экран
         sleep(25)
         // Увеличить картинку на экране детального просмотра изображения
-        let singleImageViewControllerPage = SingleImageViewControllerPage(application: app)
+        let singleImageViewControllerPage = SingleImageViewControllerElements(application: app)
         let image = singleImageViewControllerPage.imageViewElement()
         XCTAssertTrue(image.waitForExistence(timeout: 5))
         image.pinch(withScale: 3, velocity: 1)
@@ -135,9 +136,9 @@ final class ImageFeedUITests: XCTestCase {
         shareImageButton.tap()
         sleep(5)
         // Закрыть диалоговое окно действий с изображением
-        let copyActionElement = singleImageViewControllerPage.uiActivityViewControllerCopyElement()
-        XCTAssertTrue(copyActionElement.exists)
-        copyActionElement.tap()
+        let closeButton = singleImageViewControllerPage.uiActivityViewControllerCloseButton()
+        XCTAssertTrue(closeButton.exists)
+        closeButton.tap()
         // Вернуться на экран ленты
         let backButton = singleImageViewControllerPage.backButtonElement()
         XCTAssertTrue(backButton.exists)
@@ -145,6 +146,32 @@ final class ImageFeedUITests: XCTestCase {
         sleep(3)
         // Сделать жест «смахивания» вниз по экрану для его скролла
         tableView.swipeDown()
+    }
+
+    func testFeedAdvanced2() throws {
+        _ = ImagesViewControllerScreen(application: app)
+            // Подождать, пока открывается и загружается экран ленты
+            .loadFeed()
+            // Сделать жест «смахивания» вверх по экрану для его скролла
+            .swipeUpFirstVisibleCell()
+            // Поставить лайк в ячейке картинки
+            .setupLikeOnFirstVisibleCell()
+            // Поставить лайк в ячейке картинки
+            .setupLikeOnFirstVisibleCell()
+            // Нажать на эту ячейку
+            .tapOnFirstVisibleCell()
+            // Увеличить картинку на экране детального просмотра изображения
+            .zoomInImage()
+            // Уменьшить картинку
+            .zoomOutImage()
+            // Нажать на кнопку действий с изображением
+            .tapOnShareImageButton()
+            // Закрыть диалоговое окно действий с изображением
+            .closeUIActionViewController()
+            // Вернуться на экран ленты
+            .returnOnImagesFeed()
+            // Сделать жест «смахивания» вниз по экрану для его скролла
+            .swipeDownTableView()
     }
 
     /// Тестирование отображения профиля пользователя, выход из профиля
@@ -179,79 +206,11 @@ final class ImageFeedUITests: XCTestCase {
     override func tearDownWithError() throws {
         try super.tearDownWithError()
 
+        let screenshot = XCUIScreen.main.screenshot()
+        let attachment = XCTAttachment(screenshot: screenshot)
+        attachment.lifetime = .deleteOnSuccess
+        add(attachment)
+
         app.terminate()
-    }
-}
-
-final class ImagesViewControllerPage {
-    // MARK: - Private Properties
-
-    private var application: XCUIApplication
-
-    // MARK: - Initializers
-
-    init (application: XCUIApplication) {
-        self.application = application
-    }
-
-    // MARK: - Public Methods
-
-    func tableViewElement() -> XCUIElement {
-        return application.tables.element(matching: .table, identifier: "ImagesViewController.tableView")
-    }
-
-    func likeButtonElement(forCell: XCUIElement) -> XCUIElement {
-        return forCell.children(matching: .button).element(
-            matching: NSPredicate(format: "identifier == 'cellButton'")
-        )
-    }
-
-    func getFirstLikableCell() -> XCUIElement? {
-        let cellsCount = tableViewElement().children(matching: .cell).count
-        if cellsCount == 0 {
-            return nil
-        }
-        for i in 0...cellsCount - 1 {
-            let cell = tableViewElement().children(matching: .cell).element(boundBy: i)
-            let likeButton = likeButtonElement(forCell: cell)
-            if likeButton.exists && likeButton.isHittable {
-                return cell
-            }
-        }
-        return nil
-    }
-}
-
-final class SingleImageViewControllerPage {
-    // MARK: - Private Properties
-
-    private var application: XCUIApplication
-
-    // MARK: - Initializers
-
-    init (application: XCUIApplication) {
-        self.application = application
-    }
-
-    // MARK: - Public Methods
-
-    func scrollViewElement() -> XCUIElement {
-        return application.scrollViews.element(matching: .scrollView, identifier: "SingleImageViewController.scrollView")
-    }
-
-    func imageViewElement() -> XCUIElement {
-        return scrollViewElement().images.element(matching: .image, identifier: "SingleImageViewController.imageView")
-    }
-
-    func backButtonElement() -> XCUIElement {
-        return application.buttons.element(matching: .button, identifier: "SingleImageViewController.backButton")
-    }
-
-    func shareImageButtonElement() -> XCUIElement {
-        return application.buttons.element(matching: .button, identifier: "SingleImageViewController.shareImageButton")
-    }
-
-    func uiActivityViewControllerCopyElement() -> XCUIElement {
-        return application.collectionViews.containing(.cell, identifier: "Скопировать").element
     }
 }
