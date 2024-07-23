@@ -4,12 +4,10 @@
 //
 //  Created by Сергей Кухарев on 19.07.2024.
 //
-@testable import ImageFeed
 import XCTest
 
 final class ImageFeedUITests: XCTestCase {
     private var app = XCUIApplication() // переменная приложения
-    #warning("Перед тестированием ввести имя реквизиты учётной записи в Unsplash")
     private enum Credentials {
         static let userLogin = ""
         static let userPassword = ""
@@ -53,102 +51,6 @@ final class ImageFeedUITests: XCTestCase {
 
     /// Тестирование сценария использования ленты фотографий
     func testFeed() throws {
-        // тестируем сценарий ленты
-        // Подождать, пока открывается и загружается экран ленты
-        let tablesQuery = app.tables
-        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        XCTAssertTrue(cell.waitForExistence(timeout: 10))
-        sleep(3)
-        // Поставить лайк в ячейке верхней картинки
-        let likeButton = cell.buttons["cellButton"]
-        XCTAssertTrue(likeButton.exists)
-        likeButton.tap()
-        sleep(3)
-        // Отменить лайк в ячейке верхней картинки
-        let cancelLikeButton = cell.buttons["cellButton"]
-        XCTAssertTrue(cancelLikeButton.exists)
-        cancelLikeButton.tap()
-        sleep(3)
-        // Нажать на верхнюю ячейку
-        cell.tap()
-        // Подождать, пока картинка открывается на весь экран
-        sleep(25)
-        // Увеличить картинку
-        let image = app.scrollViews.images.element(boundBy: 0)
-        XCTAssertTrue(image.waitForExistence(timeout: 5))
-        image.pinch(withScale: 3, velocity: 1)
-        sleep(5)
-        // Уменьшить картинку
-        image.pinch(withScale: 0.5, velocity: -1)
-        sleep(3)
-        // Вернуться на экран ленты
-        app.buttons["backButton"].tap()
-        sleep(3)
-        // Сделать жест «смахивания» вверх по экрану для его скролла
-        let tableView = tablesQuery.element(boundBy: 0)
-        tableView.swipeUp()
-        sleep(3)
-    }
-
-    /// Тестирование сценария использования ленты фотографий (продвинутое)
-    func testFeedAdvanced() throws {
-        let imagesViewControllerPage = ImagesViewControllerElements(application: app)
-        // Подождать, пока открывается и загружается экран ленты
-        let tableView = imagesViewControllerPage.tableViewElement()
-        XCTAssertTrue(tableView.exists)
-        sleep(10)
-        let firstCell = imagesViewControllerPage.getFirstLikableCell()
-        XCTAssertNotNil(firstCell)
-        guard let firstCell = firstCell else { return }
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 10))
-        sleep(3)
-        // Сделать жест «смахивания» вверх по экрану для его скролла
-        firstCell.swipeUp()
-        sleep(3)
-        // Поставить лайк в ячейке картинки
-        let likeableCell = imagesViewControllerPage.getFirstLikableCell()
-        XCTAssertNotNil(likeableCell)
-        guard let likeableCell = likeableCell else { return }
-        XCTAssertTrue(likeableCell.waitForExistence(timeout: 10))
-        let likeButton = imagesViewControllerPage.likeButtonElement(forCell: likeableCell)
-        XCTAssertTrue(likeButton.exists)
-        likeButton.tap()
-        sleep(3)
-        // Отменить лайк в ячейке картинки
-        likeButton.tap()
-        sleep(3)
-        // Нажать на эту ячейку
-        likeableCell.tap()
-        // Подождать, пока картинка открывается на весь экран
-        sleep(25)
-        // Увеличить картинку на экране детального просмотра изображения
-        let singleImageViewControllerPage = SingleImageViewControllerElements(application: app)
-        let image = singleImageViewControllerPage.imageViewElement()
-        XCTAssertTrue(image.waitForExistence(timeout: 5))
-        image.pinch(withScale: 3, velocity: 1)
-        sleep(5)
-        // Уменьшить картинку
-        image.pinch(withScale: 0.5, velocity: -1)
-        sleep(3)
-        // Нажать на кнопку действий с изображением
-        let shareImageButton = singleImageViewControllerPage.shareImageButtonElement()
-        XCTAssertTrue(shareImageButton.exists)
-        shareImageButton.tap()
-        sleep(5)
-        // Закрыть диалоговое окно действий с изображением
-        let closeButton = singleImageViewControllerPage.uiActivityViewControllerCloseButton()
-        XCTAssertTrue(closeButton.exists)
-        closeButton.tap()
-        // Вернуться на экран ленты
-        let backButton = singleImageViewControllerPage.backButtonElement()
-        XCTAssertTrue(backButton.exists)
-        backButton.tap()
-        sleep(3)
-        // Сделать жест «смахивания» вниз по экрану для его скролла
-        tableView.swipeDown()
-    }
-
-    func testFeedAdvanced2() throws {
         _ = ImagesViewControllerScreen(application: app)
             // Подождать, пока открывается и загружается экран ленты
             .loadFeed()
