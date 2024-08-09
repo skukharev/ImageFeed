@@ -96,7 +96,7 @@ final class ProfileViewController: UIViewController {
 
     /// Обработчик нажатия кнопки "Выйти из профиля"
     /// - Parameter sender: объект, генерирующий событие
-    @objc func exitButonTouchUpInside(_ sender: UIButton) {
+    @objc private func exitButonTouchUpInside(_ sender: UIButton) {
         if #available(iOS 17.5, *) {
             let impact = UIImpactFeedbackGenerator(style: .heavy, view: self.view)
             impact.impactOccurred()
